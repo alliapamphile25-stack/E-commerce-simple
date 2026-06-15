@@ -84,18 +84,18 @@
   <div class="hero__bg" role="presentation"></div>
 
   <div class="hero__content">
-    <span class="hero__label">Nouvelle collection 2025</span>
+    <span class="hero__label" data-admin-key="hero-label">Nouvelle collection 2025</span>
 
     <h1 class="hero__title">
-      L'art de vivre<br>avec <em>élégance</em>
+      <span data-admin-key="hero-title1">L'art de vivre</span><br><span data-admin-key="hero-title2"><em>élégance</em></span>
     </h1>
 
-    <p class="hero__desc">
+    <p class="hero__desc" data-admin-key="hero-desc">
       Une sélection rigoureuse d'objets d'exception, pensés pour ceux qui refusent le compromis entre style et substance.
     </p>
 
     <div class="hero__actions">
-      <a href="products.html" class="btn btn--primary btn--lg">
+      <a href="products.html" class="btn btn--primary btn--lg" data-admin-key="hero-btn1">
         Découvrir la collection
       </a>
       <a href="#featured" class="btn btn--outline-gold btn--lg">
@@ -173,12 +173,12 @@
 <section class="promo-banner" aria-label="Offre spéciale">
   <div class="promo-banner__inner">
     <div class="slide-left">
-      <span class="promo-banner__tag">Offre limitée</span>
-      <h2 class="promo-banner__title">Jusqu'à<br>−30% sur<br>les montres</h2>
-      <p class="promo-banner__desc">
+      <span class="promo-banner__tag" data-admin-key="promo-tag">Offre limitée</span>
+      <h2 class="promo-banner__title" data-admin-key="promo-title">Jusqu'à<br>−30% sur<br>les montres</h2>
+      <p class="promo-banner__desc" data-admin-key="promo-desc">
         Pour cette saison uniquement, profitez de remises exceptionnelles sur notre collection horlogerie. Des pièces qui traversent le temps.
       </p>
-      <a href="products.html?cat=montres" class="btn btn--primary btn--lg">
+      <a href="products.html?cat=montres" class="btn btn--primary btn--lg" data-admin-key="promo-btn">
         Voir les montres →
       </a>
     </div>
@@ -329,6 +329,7 @@
 
 <!-- ── Scripts ── -->
 <script src="js/products.js"></script>
+<script src="js/admin-sync.js"></script>
 <script src="js/cart.js"></script>
 <script src="js/main.js"></script>
 <script>
