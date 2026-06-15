@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — LUXE & CO</title>
+  <meta name="description" content="Contactez l'équipe LUXE&CO pour toute question sur vos commandes, produits ou partenariats. Réponse sous 24h.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="navbar__inner">
+    <a href="index.html" class="navbar__logo">LUXE<span>&</span>CO</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="products.html">Catalogue</a></li>
+      <li><a href="contact.html" class="active">Contact</a></li>
+    </ul>
+    <div class="navbar__actions">
+      <button class="cart-icon-btn" aria-label="Panier">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 01-8 0"/>
+        </svg>
+        <span class="cart-badge">0</span>
+      </button>
+      <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+<div class="nav-overlay"></div>
+
+<aside class="mini-cart">
+  <div class="mini-cart__header">
+    <h3>Mon Panier</h3><button class="mini-cart__close">✕</button>
+  </div>
+  <div class="mini-cart__items"><p class="mini-cart__empty">Votre panier est vide.</p></div>
+  <div class="mini-cart__footer" style="display:none">
+    <div class="mini-cart__total"><span>Total</span><span class="mini-cart__total-val">0,00 €</span></div>
+    <a href="cart.html" class="btn btn--dark btn--full" style="margin-bottom:.7rem">Voir le panier</a>
+    <a href="checkout.html" class="btn btn--primary btn--full">Commander →</a>
+  </div>
+</aside>
+
+<!-- ── En-tête page ── -->
+<div class="contact-page">
+  <div style="background:var(--gray-100);padding:4rem 1.5rem 3rem;margin-bottom:0">
+    <div style="max-width:1240px;margin:0 auto">
+      <span class="section-label">Nous joindre</span>
+      <h1 class="section-title" style="margin-top:.3rem">Contactez-nous</h1>
+      <p class="section-subtitle">Une question ? Un projet ? Nous vous répondons sous 24h.</p>
+    </div>
+  </div>
+
+  <div class="contact-layout">
+
+    <!-- ── Informations de contact ── -->
+    <div>
+      <p class="contact-info__desc">
+        Notre équipe est disponible du lundi au vendredi, de 9h à 18h. Pour les commandes urgentes ou les questions sur votre suivi, privilégiez le téléphone ou le chat.
+      </p>
+
+      <div class="contact-details">
+        <div class="contact-detail-item slide-left delay-1">
+          <div class="contact-detail-item__icon">📍</div>
+          <div>
+            <h4>Adresse</h4>
+            <p>12 rue de la Paix, 75001 Paris<br>France</p>
+          </div>
+        </div>
+        <div class="contact-detail-item slide-left delay-2">
+          <div class="contact-detail-item__icon">📞</div>
+          <div>
+            <h4>Téléphone</h4>
+            <p>+33 1 23 45 67 89<br>Lun–Ven, 9h–18h</p>
+          </div>
+        </div>
+        <div class="contact-detail-item slide-left delay-3">
+          <div class="contact-detail-item__icon">✉️</div>
+          <div>
+            <h4>E-mail</h4>
+            <p>bonjour@luxe-co.fr<br>Réponse sous 24h</p>
+          </div>
+        </div>
+        <div class="contact-detail-item slide-left delay-4">
+          <div class="contact-detail-item__icon">💬</div>
+          <div>
+            <h4>Chat en ligne</h4>
+            <p>Disponible sur le site<br>Lun–Sam, 9h–20h</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ rapide -->
+      <div style="margin-top:3rem">
+        <h3 style="font-size:1.1rem;margin-bottom:1.2rem">Questions fréquentes</h3>
+        <div id="faq-list">
+          <!-- Rempli par JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Formulaire ── -->
+    <div class="contact-form-card slide-right">
+      <h3>Envoyer un message</h3>
+
+      <form id="contact-form" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="c-fname">Prénom *</label>
+            <input type="text" id="c-fname" required placeholder="Marie">
+          </div>
+          <div class="form-group">
+            <label for="c-lname">Nom *</label>
+            <input type="text" id="c-lname" required placeholder="Dupont">
+          </div>
+        </div>
+
+        <div class="form-row form-row--full" style="margin-bottom:1rem">
+          <div class="form-group">
+            <label for="c-email">E-mail *</label>
+            <input type="email" id="c-email" required placeholder="marie@exemple.fr">
+          </div>
+        </div>
+
+        <div class="form-row form-row--full" style="margin-bottom:1rem">
+          <div class="form-group">
+            <label for="c-subject">Sujet *</label>
+            <select id="c-subject" required>
+              <option value="">— Choisissez un sujet —</option>
+              <option value="order">Ma commande</option>
+              <option value="return">Retour / Remboursement</option>
+              <option value="product">Question sur un produit</option>
+              <option value="partnership">Partenariat / B2B</option>
+              <option value="press">Presse / Médias</option>
+              <option value="other">Autre</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:1.5rem">
+          <label for="c-message">Message *</label>
+          <textarea id="c-message" rows="5" required
+            placeholder="Décrivez votre demande en détail…"
+            style="resize:vertical;min-height:120px;padding:.8rem 1rem;border:1.5px solid var(--gray-200);border-radius:var(--radius);font-family:var(--font-body);font-size:.9rem;outline:none;transition:border-color var(--transition);width:100%"></textarea>
+        </div>
+
+        <!-- Opt-in newsletter -->
+        <label style="display:flex;align-items:flex-start;gap:.75rem;margin-bottom:1.5rem;cursor:pointer;font-size:.85rem;color:var(--gray-600)">
+          <input type="checkbox" id="c-newsletter" style="accent-color:var(--gold);margin-top:.15rem;flex-shrink:0">
+          Je souhaite recevoir les actualités et offres exclusives de LUXE&CO.
+        </label>
+
+        <button type="submit" class="btn btn--primary btn--full btn--lg" id="contact-submit">
+          Envoyer le message
+        </button>
+      </form>
+
+      <!-- Confirmation inline -->
+      <div id="contact-success" style="display:none;text-align:center;padding:2rem 0">
+        <div style="font-size:2.5rem;margin-bottom:.8rem">✅</div>
+        <h4 style="font-size:1.2rem;margin-bottom:.5rem">Message envoyé !</h4>
+        <p style="color:var(--gray-600);font-size:.9rem">
+          Merci de nous avoir contactés. Notre équipe vous répondra dans les 24h.
+        </p>
+        <button class="btn btn--outline btn--sm" style="margin-top:1.2rem"
+          onclick="document.getElementById('contact-success').style.display='none';document.getElementById('contact-form').style.display='block'">
+          Envoyer un autre message
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Carte / Map placeholder -->
+  <div style="background:var(--gray-100);height:280px;display:flex;align-items:center;justify-content:center;margin-top:3rem;position:relative;overflow:hidden">
+    <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1400&q=60"
+         alt="Paris, France"
+         style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.4">
+    <div style="position:relative;text-align:center;z-index:1">
+      <div style="font-size:2rem;margin-bottom:.5rem">📍</div>
+      <p style="font-weight:700;font-size:1rem">12 rue de la Paix, 75001 Paris</p>
+      <p style="font-size:.85rem;color:var(--gray-600)">Métro : Opéra (lignes 3, 7, 8)</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── Footer ── -->
+<footer class="footer">
+  <div class="footer__grid">
+    <div>
+      <a href="index.html" class="footer__logo">LUXE<span>&</span>CO</a>
+      <p class="footer__about">Une boutique de curation dédiée aux amateurs d'objets d'exception.</p>
+      <div class="footer__socials">
+        <a href="#" class="social-link" aria-label="Instagram">𝕀</a>
+        <a href="#" class="social-link" aria-label="Facebook">𝔽</a>
+        <a href="#" class="social-link" aria-label="Pinterest">𝕻</a>
+      </div>
+    </div>
+    <div>
+      <h4 class="footer__col-title">Boutique</h4>
+      <ul class="footer__links">
+        <li><a href="products.html">Catalogue</a></li>
+        <li><a href="products.html?cat=montres">Montres</a></li>
+        <li><a href="products.html?cat=parfums">Parfums</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="footer__col-title">Aide</h4>
+      <ul class="footer__links">
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="#">Livraison</a></li>
+        <li><a href="#">Retours</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="footer__col-title">Légal</h4>
+      <ul class="footer__links">
+        <li><a href="#">Mentions légales</a></li>
+        <li><a href="#">CGV</a></li>
+        <li><a href="#">Confidentialité</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer__bottom">
+    <span>© 2025 LUXE&CO. Tous droits réservés.</span>
+    <div class="footer__payments">
+      <span class="payment-icon">VISA</span>
+      <span class="payment-icon">MC</span>
+      <span class="payment-icon">PayPal</span>
+    </div>
+  </div>
+</footer>
+
+<button class="back-to-top" aria-label="Retour en haut">↑</button>
+
+<script src="js/products.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/main.js"></script>
+<script>
+// FAQ accordéon
+const FAQ = [
+  { q: "Quels sont les délais de livraison ?", a: "3 à 5 jours ouvrés en France métropolitaine. Livraison express 24h disponible à +9,90€." },
+  { q: "Comment retourner un produit ?", a: "Vous disposez de 30 jours après réception pour retourner un article dans son état d'origine. Les frais de retour sont offerts." },
+  { q: "Mes paiements sont-ils sécurisés ?", a: "Oui, toutes les transactions sont chiffrées SSL 256 bits. Nous ne stockons aucune donnée bancaire." },
+  { q: "Proposez-vous des services B2B ?", a: "Oui, nous avons des tarifs dégressifs pour les entreprises et une offre de personnalisation. Contactez-nous via le formulaire en sélectionnant « Partenariat / B2B »." }
+];
+
+document.getElementById("faq-list").innerHTML = FAQ.map((item, i) => `
+  <div style="border-bottom:1px solid var(--gray-200)">
+    <button class="faq-btn" data-idx="${i}"
+      style="width:100%;text-align:left;padding:.9rem 0;background:none;border:none;cursor:pointer;font-family:var(--font-body);font-size:.9rem;font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:1rem;color:var(--black)">
+      ${item.q}
+      <span class="faq-icon" style="font-size:1.1rem;color:var(--gold);flex-shrink:0;transition:transform .25s">+</span>
+    </button>
+    <div class="faq-answer" data-idx="${i}"
+      style="max-height:0;overflow:hidden;transition:max-height .3s ease;font-size:.87rem;color:var(--gray-600);line-height:1.65">
+      <p style="padding-bottom:1rem">${item.a}</p>
+    </div>
+  </div>`).join("");
+
+document.querySelectorAll(".faq-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const idx    = btn.dataset.idx;
+    const answer = document.querySelector(`.faq-answer[data-idx="${idx}"]`);
+    const icon   = btn.querySelector(".faq-icon");
+    const isOpen = answer.style.maxHeight !== "0px" && answer.style.maxHeight !== "";
+
+    // Ferme tous
+    document.querySelectorAll(".faq-answer").forEach(a => a.style.maxHeight = "0px");
+    document.querySelectorAll(".faq-icon").forEach(i => { i.textContent = "+"; i.style.transform = ""; });
+
+    if (!isOpen) {
+      answer.style.maxHeight = answer.scrollHeight + "px";
+      icon.textContent = "−";
+      icon.style.transform = "rotate(180deg)";
+    }
+  });
+});
+
+// Formulaire contact
+document.getElementById("contact-form").addEventListener("submit", e => {
+  e.preventDefault();
+
+  const fields = ["c-fname", "c-lname", "c-email", "c-subject", "c-message"];
+  let valid = true;
+
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el.value.trim()) {
+      el.style.borderColor = "#c0392b";
+      valid = false;
+    } else {
+      el.style.borderColor = "";
+    }
+  });
+
+  if (!valid) {
+    Cart.showToast("Veuillez remplir tous les champs obligatoires.");
+    return;
+  }
+
+  const btn = document.getElementById("contact-submit");
+  btn.textContent = "Envoi en cours…";
+  btn.disabled = true;
+
+  // Simulation envoi
+  setTimeout(() => {
+    document.getElementById("contact-form").style.display = "none";
+    document.getElementById("contact-success").style.display = "block";
+  }, 1200);
+});
+</script>
+</body>
+</html>

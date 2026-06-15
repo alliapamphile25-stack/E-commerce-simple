@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO -->
+  <title>LUXE & CO — Boutique Premium | Montres, Maroquinerie, Parfums</title>
+  <meta name="description" content="Découvrez notre sélection de produits premium : montres, maroquinerie, parfums et accessoires. Design minimaliste, qualité exceptionnelle. Livraison offerte dès 100€.">
+  <meta name="keywords" content="boutique luxe, montres premium, maroquinerie, parfums, accessoires haut de gamme">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="LUXE & CO — Boutique Premium">
+  <meta property="og:description" content="Sélection de produits premium au design intemporel.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1200&q=80">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     NAVIGATION
+════════════════════════════════════════════════════════════ -->
+<nav class="navbar" role="navigation" aria-label="Navigation principale">
+  <div class="navbar__inner">
+    <a href="index.html" class="navbar__logo">LUXE<span>&</span>CO</a>
+
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Accueil</a></li>
+      <li><a href="products.html">Catalogue</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+
+    <div class="navbar__actions">
+      <!-- Bouton panier avec badge -->
+      <button class="cart-icon-btn" aria-label="Ouvrir le panier">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 01-8 0"/>
+        </svg>
+        <span class="cart-badge" aria-live="polite">0</span>
+      </button>
+
+      <button class="hamburger" aria-label="Ouvrir le menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Overlay mobile -->
+<div class="nav-overlay" aria-hidden="true"></div>
+
+<!-- Mini-panier -->
+<aside class="mini-cart" aria-label="Panier rapide">
+  <div class="mini-cart__header">
+    <h3>Mon Panier</h3>
+    <button class="mini-cart__close" aria-label="Fermer">✕</button>
+  </div>
+  <div class="mini-cart__items">
+    <p class="mini-cart__empty">Votre panier est vide.</p>
+  </div>
+  <div class="mini-cart__footer" style="display:none">
+    <div class="mini-cart__total">
+      <span>Total</span>
+      <span class="mini-cart__total-val">0,00 €</span>
+    </div>
+    <a href="cart.html" class="btn btn--dark btn--full" style="margin-bottom:.7rem">Voir le panier</a>
+    <a href="checkout.html" class="btn btn--primary btn--full">Commander →</a>
+  </div>
+</aside>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HERO — Bannière principale
+════════════════════════════════════════════════════════════ -->
+<section class="hero" aria-label="Bannière principale">
+  <div class="hero__bg" role="presentation"></div>
+
+  <div class="hero__content">
+    <span class="hero__label">Nouvelle collection 2025</span>
+
+    <h1 class="hero__title">
+      L'art de vivre<br>avec <em>élégance</em>
+    </h1>
+
+    <p class="hero__desc">
+      Une sélection rigoureuse d'objets d'exception, pensés pour ceux qui refusent le compromis entre style et substance.
+    </p>
+
+    <div class="hero__actions">
+      <a href="products.html" class="btn btn--primary btn--lg">
+        Découvrir la collection
+      </a>
+      <a href="#featured" class="btn btn--outline-gold btn--lg">
+        Produits en vedette
+      </a>
+    </div>
+  </div>
+
+  <div class="hero__scroll" aria-hidden="true">Scroll</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     BARRE DE CONFIANCE
+════════════════════════════════════════════════════════════ -->
+<div class="trust-bar">
+  <div class="trust-bar__inner">
+    <div class="trust-item">
+      <span class="trust-item__icon">🚚</span>
+      <span>Livraison offerte dès <strong>100€</strong></span>
+    </div>
+    <div class="trust-item">
+      <span class="trust-item__icon">↩️</span>
+      <span>Retours gratuits <strong>30 jours</strong></span>
+    </div>
+    <div class="trust-item">
+      <span class="trust-item__icon">🔒</span>
+      <span>Paiement <strong>100% sécurisé</strong></span>
+    </div>
+    <div class="trust-item">
+      <span class="trust-item__icon">⭐</span>
+      <span>Note moyenne <strong>4.8/5</strong></span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     CATÉGORIES
+════════════════════════════════════════════════════════════ -->
+<section class="section categories-section" aria-labelledby="cats-title">
+  <div class="container">
+    <div class="section__header section__header--center slide-up">
+      <span class="section-label">Explorer par</span>
+      <h2 class="section-title" id="cats-title">Nos catégories</h2>
+    </div>
+
+    <div class="categories-grid" id="categories-grid">
+      <!-- Rempli par JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PRODUITS EN VEDETTE
+════════════════════════════════════════════════════════════ -->
+<section class="section" id="featured" aria-labelledby="featured-title">
+  <div class="container">
+    <div class="section__header" style="display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
+      <div class="slide-left">
+        <span class="section-label">Sélection</span>
+        <h2 class="section-title" id="featured-title">Produits en vedette</h2>
+        <p class="section-subtitle">Nos pièces les plus remarquées, choisies avec soin.</p>
+      </div>
+      <a href="products.html" class="btn btn--outline slide-right">Voir tout →</a>
+    </div>
+
+    <div class="products-grid" id="featured-products">
+      <!-- Rempli par JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     BANNIÈRE PROMOTIONNELLE
+════════════════════════════════════════════════════════════ -->
+<section class="promo-banner" aria-label="Offre spéciale">
+  <div class="promo-banner__inner">
+    <div class="slide-left">
+      <span class="promo-banner__tag">Offre limitée</span>
+      <h2 class="promo-banner__title">Jusqu'à<br>−30% sur<br>les montres</h2>
+      <p class="promo-banner__desc">
+        Pour cette saison uniquement, profitez de remises exceptionnelles sur notre collection horlogerie. Des pièces qui traversent le temps.
+      </p>
+      <a href="products.html?cat=montres" class="btn btn--primary btn--lg">
+        Voir les montres →
+      </a>
+    </div>
+    <div class="promo-banner__img slide-right">
+      <img src="https://images.unsplash.com/photo-1594576722512-582bcd5d4b96?w=800&q=80"
+           alt="Collection montres"
+           loading="lazy">
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     TÉMOIGNAGES
+════════════════════════════════════════════════════════════ -->
+<section class="section testimonials" aria-labelledby="reviews-title">
+  <div class="container">
+    <div class="section__header section__header--center slide-up">
+      <span class="section-label">Ils nous font confiance</span>
+      <h2 class="section-title" id="reviews-title">Avis clients</h2>
+    </div>
+
+    <div class="testimonials-grid">
+      <div class="testimonial-card slide-up delay-1">
+        <div class="testimonial-card__stars">★★★★★</div>
+        <p class="testimonial-card__text">"La montre Élégance Noir est absolument sublime. La qualité du cuir et la précision du mouvement dépassent largement leur prix. Je recommande sans réserve."</p>
+        <div class="testimonial-card__author">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80"
+               alt="Sophie M." class="testimonial-card__avatar" loading="lazy">
+          <div>
+            <span class="testimonial-card__name">Sophie M.</span>
+            <span class="testimonial-card__role">Architecte, Lyon</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card slide-up delay-2">
+        <div class="testimonial-card__stars">★★★★★</div>
+        <p class="testimonial-card__text">"Le sac en cuir est une merveille. La livraison était rapide et l'emballage vraiment soigné. C'est le genre d'achat qu'on ne regrette jamais."</p>
+        <div class="testimonial-card__author">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80"
+               alt="Thomas R." class="testimonial-card__avatar" loading="lazy">
+          <div>
+            <span class="testimonial-card__name">Thomas R.</span>
+            <span class="testimonial-card__role">Entrepreneur, Paris</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card slide-up delay-3">
+        <div class="testimonial-card__stars">★★★★☆</div>
+        <p class="testimonial-card__text">"La bougie Ambiance Luxe embaume toute la maison. 60h de combustion, c'est exact. Le flacon est magnifique, je l'ai offert et la personne était ravie."</p>
+        <div class="testimonial-card__author">
+          <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80"
+               alt="Clara D." class="testimonial-card__avatar" loading="lazy">
+          <div>
+            <span class="testimonial-card__name">Clara D.</span>
+            <span class="testimonial-card__role">Designer, Bordeaux</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     NEWSLETTER
+════════════════════════════════════════════════════════════ -->
+<section class="newsletter" aria-label="Inscription newsletter">
+  <div class="container">
+    <h2 class="newsletter__title slide-up">Restez dans la confidence</h2>
+    <p class="newsletter__desc slide-up delay-1">
+      Nouveautés, offres exclusives, avant-premières — rien que pour vous.
+    </p>
+    <form class="newsletter__form slide-up delay-2" id="newsletter-form" novalidate>
+      <input type="email" class="newsletter__input"
+             placeholder="Votre adresse e-mail"
+             aria-label="Adresse e-mail"
+             required>
+      <button type="submit" class="btn btn--primary">S'inscrire</button>
+    </form>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════════════════════ -->
+<footer class="footer" role="contentinfo">
+  <div class="footer__grid">
+    <div>
+      <a href="index.html" class="footer__logo">LUXE<span>&</span>CO</a>
+      <p class="footer__about">
+        Une boutique de curation dédiée aux amateurs d'objets d'exception. Chaque produit est soigneusement sélectionné pour sa qualité, son design et sa durabilité.
+      </p>
+      <div class="footer__socials">
+        <a href="#" class="social-link" aria-label="Instagram">𝕀</a>
+        <a href="#" class="social-link" aria-label="Facebook">𝔽</a>
+        <a href="#" class="social-link" aria-label="Pinterest">𝕻</a>
+        <a href="#" class="social-link" aria-label="LinkedIn">𝕃</a>
+      </div>
+    </div>
+
+    <div>
+      <h4 class="footer__col-title">Boutique</h4>
+      <ul class="footer__links">
+        <li><a href="products.html">Tous les produits</a></li>
+        <li><a href="products.html?cat=montres">Montres</a></li>
+        <li><a href="products.html?cat=maroquinerie">Maroquinerie</a></li>
+        <li><a href="products.html?cat=parfums">Parfums</a></li>
+        <li><a href="products.html?cat=bijoux">Bijoux</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h4 class="footer__col-title">Informations</h4>
+      <ul class="footer__links">
+        <li><a href="#">À propos</a></li>
+        <li><a href="#">Livraison & retours</a></li>
+        <li><a href="#">Guide des tailles</a></li>
+        <li><a href="#">Programme fidélité</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h4 class="footer__col-title">Légal</h4>
+      <ul class="footer__links">
+        <li><a href="#">Mentions légales</a></li>
+        <li><a href="#">CGV</a></li>
+        <li><a href="#">Politique de confidentialité</a></li>
+        <li><a href="#">Cookies</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer__bottom">
+    <span>© 2025 LUXE&CO. Tous droits réservés.</span>
+    <div class="footer__payments">
+      <span class="payment-icon">VISA</span>
+      <span class="payment-icon">MC</span>
+      <span class="payment-icon">AMEX</span>
+      <span class="payment-icon">PayPal</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Bouton retour en haut -->
+<button class="back-to-top" aria-label="Retour en haut">↑</button>
+
+<!-- ── Scripts ── -->
+<script src="js/products.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/main.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  /* Catégories */
+  const catsGrid = document.getElementById("categories-grid");
+  if (catsGrid) {
+    catsGrid.innerHTML = CATEGORIES.filter(c => c.id !== "all").map(c => `
+      <a href="products.html?cat=${c.id}" class="cat-card slide-up">
+        <span class="cat-card__icon">${c.icon}</span>
+        <span class="cat-card__name">${c.name}</span>
+      </a>`).join("");
+  }
+
+  /* Produits en vedette */
+  const featuredGrid = document.getElementById("featured-products");
+  if (featuredGrid) {
+    featuredGrid.innerHTML = getFeaturedProducts().map(renderProductCard).join("");
+    bindAddToCart(featuredGrid);
+  }
+
+  /* Newsletter */
+  document.getElementById("newsletter-form")?.addEventListener("submit", e => {
+    e.preventDefault();
+    Cart.showToast("Inscription confirmée ! Merci 🎉");
+    e.target.reset();
+  });
+
+});
+
+/* ── Générateur de carte produit (partagé entre pages) ── */
+function renderProductCard(p) {
+  const stars = "★".repeat(Math.floor(p.rating)) + (p.rating % 1 >= .5 ? "½" : "");
+  return `
+    <article class="product-card slide-up" data-id="${p.id}">
+      <a href="product-detail.html?id=${p.id}" class="product-card__thumb">
+        <img src="${p.image}" alt="${p.name}" loading="lazy">
+        ${p.badge ? `<span class="product-card__badge">${p.badge}</span>` : ""}
+        <button class="product-card__wish" aria-label="Ajouter aux favoris">♡</button>
+      </a>
+      <div class="product-card__body">
+        <span class="product-card__category">${p.category}</span>
+        <h3 class="product-card__name">
+          <a href="product-detail.html?id=${p.id}">${p.name}</a>
+        </h3>
+        <div class="product-card__rating">
+          <span class="stars">${stars}</span>
+          <span>${p.rating} (${p.reviews} avis)</span>
+        </div>
+        <div class="product-card__footer">
+          <div class="product-card__price">
+            <span class="price-current">${p.price.toFixed(2)} €</span>
+            ${p.oldPrice ? `<span class="price-old">${p.oldPrice.toFixed(2)} €</span>` : ""}
+          </div>
+          <button class="product-card__add" data-id="${p.id}" aria-label="Ajouter au panier">+</button>
+        </div>
+      </div>
+    </article>`;
+}
+
+function bindAddToCart(container) {
+  container.querySelectorAll(".product-card__add").forEach(btn => {
+    btn.addEventListener("click", e => {
+      e.preventDefault();
+      Cart.add(parseInt(btn.dataset.id));
+      btn.textContent = "✓";
+      setTimeout(() => btn.textContent = "+", 1200);
+    });
+  });
+}
+</script>
+</body>
+</html>

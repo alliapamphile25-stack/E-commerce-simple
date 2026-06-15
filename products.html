@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catalogue — LUXE & CO</title>
+  <meta name="description" content="Explorez notre catalogue complet : montres, maroquinerie, parfums, bijoux et accessoires premium. Filtrez par catégorie et trouvez votre pièce idéale.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="navbar__inner">
+    <a href="index.html" class="navbar__logo">LUXE<span>&</span>CO</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="products.html" class="active">Catalogue</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="navbar__actions">
+      <button class="cart-icon-btn" aria-label="Ouvrir le panier">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 01-8 0"/>
+        </svg>
+        <span class="cart-badge">0</span>
+      </button>
+      <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+<div class="nav-overlay"></div>
+
+<aside class="mini-cart">
+  <div class="mini-cart__header">
+    <h3>Mon Panier</h3>
+    <button class="mini-cart__close">✕</button>
+  </div>
+  <div class="mini-cart__items"><p class="mini-cart__empty">Votre panier est vide.</p></div>
+  <div class="mini-cart__footer" style="display:none">
+    <div class="mini-cart__total">
+      <span>Total</span><span class="mini-cart__total-val">0,00 €</span>
+    </div>
+    <a href="cart.html" class="btn btn--dark btn--full" style="margin-bottom:.7rem">Voir le panier</a>
+    <a href="checkout.html" class="btn btn--primary btn--full">Commander →</a>
+  </div>
+</aside>
+
+<!-- ── En-tête catalogue ── -->
+<div class="catalog-page">
+  <div class="catalog-header">
+    <div class="catalog-header__inner">
+      <span class="section-label">Notre boutique</span>
+      <h1 class="section-title" style="margin-top:.3rem">Catalogue complet</h1>
+      <p class="section-subtitle" id="catalog-count">Chargement…</p>
+    </div>
+  </div>
+
+  <!-- Filtres & tri -->
+  <div class="catalog-toolbar">
+    <div class="catalog-filters" id="filters" role="group" aria-label="Filtrer par catégorie">
+      <!-- Rempli par JS -->
+    </div>
+    <div class="catalog-sort">
+      <label for="sort-select" class="sr-only">Trier par</label>
+      <select id="sort-select" aria-label="Trier les produits">
+        <option value="default">Trier : Par défaut</option>
+        <option value="price-asc">Prix croissant</option>
+        <option value="price-desc">Prix décroissant</option>
+        <option value="rating">Meilleures notes</option>
+        <option value="name">Nom A→Z</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Grille produits -->
+  <div class="container" style="padding: 0 1.5rem 5rem">
+    <div class="products-grid" id="products-grid">
+      <!-- Rempli par JS -->
+    </div>
+    <div id="no-results" style="display:none" class="empty-state">
+      <div class="empty-state__icon">🔍</div>
+      <h2>Aucun produit trouvé</h2>
+      <p>Essayez une autre catégorie.</p>
+      <button class="btn btn--outline" onclick="setFilter('all')">Voir tout</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Footer compact ── -->
+<footer class="footer" style="padding:2.5rem 1.5rem">
+  <div style="max-width:1240px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;font-size:.85rem">
+    <a href="index.html" class="footer__logo" style="font-size:1.2rem;margin-bottom:0">LUXE<span>&</span>CO</a>
+    <span style="color:rgba(255,255,255,.4)">© 2025 LUXE&CO. Tous droits réservés.</span>
+    <div class="footer__payments">
+      <span class="payment-icon">VISA</span>
+      <span class="payment-icon">MC</span>
+      <span class="payment-icon">PayPal</span>
+    </div>
+  </div>
+</footer>
+
+<button class="back-to-top" aria-label="Retour en haut">↑</button>
+
+<script src="js/products.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/main.js"></script>
+<script>
+// ── Partage la fonction renderProductCard depuis index ──
+function renderProductCard(p) {
+  const stars = "★".repeat(Math.floor(p.rating));
+  return `
+    <article class="product-card slide-up" data-id="${p.id}">
+      <a href="product-detail.html?id=${p.id}" class="product-card__thumb">
+        <img src="${p.image}" alt="${p.name}" loading="lazy">
+        ${p.badge ? `<span class="product-card__badge">${p.badge}</span>` : ""}
+        <button class="product-card__wish" aria-label="Favoris">♡</button>
+      </a>
+      <div class="product-card__body">
+        <span class="product-card__category">${p.category}</span>
+        <h2 class="product-card__name"><a href="product-detail.html?id=${p.id}">${p.name}</a></h2>
+        <div class="product-card__rating">
+          <span class="stars">${stars}</span>
+          <span>${p.rating} (${p.reviews})</span>
+        </div>
+        <div class="product-card__footer">
+          <div class="product-card__price">
+            <span class="price-current">${p.price.toFixed(2)} €</span>
+            ${p.oldPrice ? `<span class="price-old">${p.oldPrice.toFixed(2)} €</span>` : ""}
+          </div>
+          <button class="product-card__add" data-id="${p.id}" aria-label="Ajouter au panier">+</button>
+        </div>
+      </div>
+    </article>`;
+}
+
+let currentFilter = "all";
+let currentSort   = "default";
+
+function setFilter(cat) {
+  currentFilter = cat;
+  document.querySelectorAll(".filter-btn").forEach(b => b.classList.toggle("is-active", b.dataset.cat === cat));
+  renderGrid();
+  history.replaceState(null, "", cat === "all" ? "products.html" : `products.html?cat=${cat}`);
+}
+
+function renderGrid() {
+  let items = getProductsByCategory(currentFilter);
+
+  // Tri
+  if (currentSort === "price-asc")  items = [...items].sort((a,b) => a.price - b.price);
+  if (currentSort === "price-desc") items = [...items].sort((a,b) => b.price - a.price);
+  if (currentSort === "rating")     items = [...items].sort((a,b) => b.rating - a.rating);
+  if (currentSort === "name")       items = [...items].sort((a,b) => a.name.localeCompare(b.name));
+
+  const grid = document.getElementById("products-grid");
+  const none = document.getElementById("no-results");
+  const count= document.getElementById("catalog-count");
+
+  if (!items.length) {
+    grid.innerHTML = "";
+    none.style.display = "block";
+    count.textContent = "0 produit";
+    return;
+  }
+
+  none.style.display = "none";
+  count.textContent = `${items.length} produit${items.length > 1 ? "s" : ""}`;
+  grid.innerHTML = items.map(renderProductCard).join("");
+
+  // Bind panier
+  grid.querySelectorAll(".product-card__add").forEach(btn => {
+    btn.addEventListener("click", e => {
+      e.preventDefault();
+      Cart.add(parseInt(btn.dataset.id));
+      btn.textContent = "✓";
+      setTimeout(() => btn.textContent = "+", 1200);
+    });
+  });
+
+  // Relancer les animations
+  requestAnimationFrame(() => {
+    document.querySelectorAll(".slide-up").forEach(el => {
+      el.classList.remove("is-visible");
+      void el.offsetWidth;
+      el.classList.add("is-visible");
+    });
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Filtres
+  const filtersEl = document.getElementById("filters");
+  filtersEl.innerHTML = CATEGORIES.map(c => `
+    <button class="filter-btn${c.id === "all" ? " is-active" : ""}" data-cat="${c.id}">
+      ${c.icon} ${c.name}
+    </button>`).join("");
+
+  filtersEl.querySelectorAll(".filter-btn").forEach(btn => {
+    btn.addEventListener("click", () => setFilter(btn.dataset.cat));
+  });
+
+  // Tri
+  document.getElementById("sort-select").addEventListener("change", e => {
+    currentSort = e.target.value;
+    renderGrid();
+  });
+
+  // Lire le paramètre URL
+  const urlCat = new URLSearchParams(location.search).get("cat");
+  if (urlCat) setFilter(urlCat);
+  else renderGrid();
+});
+</script>
+</body>
+</html>
