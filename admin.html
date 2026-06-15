@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Admin — LUXE & CO</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <style>
+    /* ── Variables ── */
+    :root {
+      --black:     #0d0d0d;
+      --gold:      #c9a96e;
+      --gold-d:    #a07840;
+      --white:     #fafafa;
+      --bg:        #f4f3ef;
+      --sidebar-w: 240px;
+      --header-h:  64px;
+      --radius:    8px;
+      --shadow:    0 2px 16px rgba(0,0,0,.08);
+      --transition:.25s cubic-bezier(.4,0,.2,1);
+      --red:       #e74c3c;
+      --green:     #27ae60;
+      --blue:      #2980b9;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 15px; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--black);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--black);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0;
+      height: 100vh;
+      z-index: 100;
+      transition: transform var(--transition);
+    }
+
+    .sidebar__logo {
+      padding: 1.5rem 1.4rem 1rem;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+    .sidebar__logo span { color: var(--gold); }
+    .sidebar__logo small {
+      display: block;
+      font-family: 'Inter', sans-serif;
+      font-size: .65rem;
+      color: rgba(255,255,255,.35);
+      font-weight: 500;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-top: .1rem;
+    }
+
+    .sidebar__nav { flex: 1; padding: 1rem 0; overflow-y: auto; }
+
+    .nav-section {
+      padding: .5rem 1.2rem .3rem;
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.25);
+      margin-top: .5rem;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      padding: .7rem 1.4rem;
+      font-size: .875rem;
+      font-weight: 500;
+      color: rgba(255,255,255,.55);
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: var(--transition);
+      user-select: none;
+    }
+    .nav-item:hover { color: #fff; background: rgba(255,255,255,.05); }
+    .nav-item.is-active {
+      color: var(--gold);
+      border-left-color: var(--gold);
+      background: rgba(201,169,110,.08);
+    }
+    .nav-item__icon { font-size: 1.05rem; width: 20px; text-align: center; flex-shrink: 0; }
+
+    .sidebar__footer {
+      padding: 1rem 1.4rem;
+      border-top: 1px solid rgba(255,255,255,.08);
+      font-size: .78rem;
+      color: rgba(255,255,255,.3);
+    }
+    .sidebar__footer a {
+      color: var(--gold);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    /* ── Main ── */
+    .main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .header {
+      height: var(--header-h);
+      background: #fff;
+      border-bottom: 1px solid #e8e5df;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: var(--shadow);
+    }
+
+    .header__title {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .header__actions { display: flex; align-items: center; gap: 1rem; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      padding: .55rem 1.1rem;
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'Inter', sans-serif;
+      font-size: .82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+    .btn--gold   { background: var(--gold); color: var(--black); }
+    .btn--gold:hover { background: var(--gold-d); }
+    .btn--dark   { background: var(--black); color: #fff; }
+    .btn--dark:hover { opacity: .85; }
+    .btn--outline{ background: transparent; border: 1.5px solid #ddd; color: var(--black); }
+    .btn--outline:hover { border-color: var(--gold); color: var(--gold); }
+    .btn--red    { background: var(--red); color: #fff; }
+    .btn--red:hover { opacity: .85; }
+    .btn--green  { background: var(--green); color: #fff; }
+    .btn--green:hover { opacity: .85; }
+    .btn--sm     { padding: .35rem .8rem; font-size: .75rem; }
+    .btn--full   { width: 100%; justify-content: center; }
+
+    /* ── Contenu pages ── */
+    .page { display: none; padding: 2rem; }
+    .page.is-active { display: block; }
+
+    /* ── Cards ── */
+    .card {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .card__title {
+      font-size: .95rem;
+      font-weight: 700;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    /* ── Stats ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 1.4rem;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: .4rem;
+    }
+    .stat-card__label { font-size: .75rem; color: #888; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; }
+    .stat-card__val   { font-size: 1.8rem; font-weight: 700; }
+    .stat-card__sub   { font-size: .78rem; color: var(--green); }
+    .stat-card__icon  { font-size: 1.5rem; margin-bottom: .3rem; }
+
+    /* ── Table produits ── */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+    thead th {
+      text-align: left;
+      padding: .7rem 1rem;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #888;
+      border-bottom: 1.5px solid #eee;
+    }
+    tbody td { padding: .9rem 1rem; border-bottom: 1px solid #f2f0eb; vertical-align: middle; }
+    tbody tr:hover { background: #faf9f6; }
+    tbody tr:last-child td { border-bottom: none; }
+
+    .product-thumb-sm {
+      width: 48px; height: 48px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: .2rem .6rem;
+      border-radius: 40px;
+      font-size: .7rem;
+      font-weight: 700;
+    }
+    .badge--gold   { background: rgba(201,169,110,.15); color: var(--gold-d); }
+    .badge--green  { background: rgba(39,174,96,.12); color: var(--green); }
+    .badge--gray   { background: #eee; color: #666; }
+
+    /* ── Formulaires ── */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-grid--3 { grid-template-columns: 1fr 1fr 1fr; }
+    .form-group { display: flex; flex-direction: column; gap: .3rem; }
+    .form-group--full { grid-column: 1 / -1; }
+
+    label {
+      font-size: .75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: #666;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="url"],
+    input[type="email"],
+    select,
+    textarea {
+      padding: .65rem .9rem;
+      border: 1.5px solid #ddd;
+      border-radius: var(--radius);
+      font-family: 'Inter', sans-serif;
+      font-size: .88rem;
+      color: var(--black);
+      background: #fff;
+      outline: none;
+      transition: border-color var(--transition);
+      width: 100%;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--gold); }
+    textarea { resize: vertical; min-height: 80px; }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.5);
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s;
+    }
+    .modal-overlay.is-open { opacity: 1; pointer-events: all; }
+
+    .modal {
+      background: #fff;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 640px;
+      max-height: 90vh;
+      overflow-y: auto;
+      transform: translateY(20px);
+      transition: transform .25s;
+      box-shadow: 0 24px 64px rgba(0,0,0,.2);
+    }
+    .modal-overlay.is-open .modal { transform: translateY(0); }
+
+    .modal__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.4rem 1.6rem 1rem;
+      border-bottom: 1px solid #eee;
+      position: sticky;
+      top: 0;
+      background: #fff;
+      z-index: 1;
+    }
+    .modal__title { font-size: 1.1rem; font-weight: 700; }
+    .modal__close {
+      background: none; border: none;
+      cursor: pointer; font-size: 1.3rem;
+      color: #888; transition: color var(--transition);
+    }
+    .modal__close:hover { color: var(--black); }
+    .modal__body { padding: 1.4rem 1.6rem; }
+    .modal__footer {
+      padding: 1rem 1.6rem;
+      border-top: 1px solid #eee;
+      display: flex;
+      gap: .8rem;
+      justify-content: flex-end;
+    }
+
+    /* ── Paramètres couleurs ── */
+    .color-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .color-item { display: flex; flex-direction: column; gap: .4rem; }
+    .color-item label { font-size: .72rem; }
+    .color-preview {
+      height: 40px;
+      border-radius: var(--radius);
+      border: 2px solid #eee;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .color-preview input[type="color"] {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      opacity: 0; cursor: pointer;
+      border: none; padding: 0;
+    }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 2rem; right: 2rem;
+      background: var(--black);
+      color: #fff;
+      padding: .9rem 1.4rem;
+      border-radius: var(--radius);
+      font-size: .85rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      z-index: 9999;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: all .3s;
+      pointer-events: none;
+    }
+    .toast.is-visible { opacity: 1; transform: translateY(0); }
+    .toast--green { background: var(--green); }
+
+    /* ── Image preview ── */
+    .img-preview {
+      width: 100%; height: 160px;
+      object-fit: cover;
+      border-radius: var(--radius);
+      border: 1.5px solid #eee;
+      display: block;
+      margin-top: .5rem;
+      background: #f4f3ef;
+    }
+
+    /* ── Features list editor ── */
+    .features-list { display: flex; flex-direction: column; gap: .5rem; margin-bottom: .7rem; }
+    .feature-row {
+      display: flex;
+      gap: .5rem;
+    }
+    .feature-row input { flex: 1; }
+    .feature-row .btn { flex-shrink: 0; }
+
+    /* ── Éditeur de textes ── */
+    .text-item {
+      padding: 1rem;
+      background: #faf9f6;
+      border-radius: var(--radius);
+      margin-bottom: .8rem;
+      border: 1.5px solid #eee;
+    }
+    .text-item label { margin-bottom: .4rem; display: block; }
+
+    /* ── Export section ── */
+    .export-card {
+      background: var(--black);
+      color: #fff;
+      border-radius: var(--radius);
+      padding: 2rem;
+      text-align: center;
+    }
+    .export-card h3 { font-size: 1.2rem; margin-bottom: .5rem; }
+    .export-card p  { color: rgba(255,255,255,.5); margin-bottom: 1.5rem; font-size: .88rem; }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.is-open { transform: translateX(0); }
+      .main { margin-left: 0; }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-grid--3 { grid-template-columns: 1fr 1fr; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* Divers */
+    hr { border: none; border-top: 1px solid #eee; margin: 1.2rem 0; }
+    .flex { display: flex; align-items: center; gap: .8rem; }
+    .flex-between { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .8rem; }
+    .mt-1 { margin-top: .6rem; }
+    .text-muted { color: #888; font-size: .82rem; }
+    .text-gold { color: var(--gold-d); font-weight: 700; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     SIDEBAR
+══════════════════════════════════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar__logo">
+    <div>
+      <div>LUXE<span>&</span>CO</div>
+      <small>Administration</small>
+    </div>
+  </div>
+
+  <nav class="sidebar__nav">
+    <div class="nav-section">Tableau de bord</div>
+    <div class="nav-item is-active" data-page="dashboard">
+      <span class="nav-item__icon">📊</span> Vue d'ensemble
+    </div>
+
+    <div class="nav-section">Contenu</div>
+    <div class="nav-item" data-page="products">
+      <span class="nav-item__icon">📦</span> Produits
+    </div>
+    <div class="nav-item" data-page="texts">
+      <span class="nav-item__icon">✏️</span> Textes & messages
+    </div>
+    <div class="nav-item" data-page="design">
+      <span class="nav-item__icon">🎨</span> Design & couleurs
+    </div>
+
+    <div class="nav-section">Outils</div>
+    <div class="nav-item" data-page="export">
+      <span class="nav-item__icon">💾</span> Exporter le site
+    </div>
+
+    <div class="nav-section">Prévisualisation</div>
+    <div class="nav-item" id="preview-btn">
+      <span class="nav-item__icon">👁️</span> Voir le site
+    </div>
+  </nav>
+
+  <div class="sidebar__footer">
+    <a href="index.html" target="_blank">← Retour au site</a>
+  </div>
+</aside>
+
+<!-- ══════════════════════════════════════════
+     MAIN
+══════════════════════════════════════════ -->
+<div class="main">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="flex">
+      <button class="btn btn--outline btn--sm" id="sidebar-toggle" style="display:none">☰</button>
+      <h1 class="header__title" id="header-title">Vue d'ensemble</h1>
+    </div>
+    <div class="header__actions">
+      <button class="btn btn--gold" id="save-btn">💾 Sauvegarder</button>
+      <a href="index.html" target="_blank" class="btn btn--dark">👁️ Voir le site</a>
+    </div>
+  </header>
+
+  <!-- ════════ PAGE : Dashboard ════════ -->
+  <div class="page is-active" id="page-dashboard">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-card__icon">📦</div>
+        <div class="stat-card__label">Produits</div>
+        <div class="stat-card__val" id="stat-products">0</div>
+        <div class="stat-card__sub">dans le catalogue</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__icon">⭐</div>
+        <div class="stat-card__label">En vedette</div>
+        <div class="stat-card__val" id="stat-featured">0</div>
+        <div class="stat-card__sub">produits mis en avant</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__icon">🏷️</div>
+        <div class="stat-card__label">En promo</div>
+        <div class="stat-card__val" id="stat-promo">0</div>
+        <div class="stat-card__sub">avec ancien prix</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__icon">💰</div>
+        <div class="stat-card__label">Prix moyen</div>
+        <div class="stat-card__val" id="stat-avg">0 €</div>
+        <div class="stat-card__sub">sur tous les produits</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card__title">📦 Aperçu du catalogue</div>
+      <div class="table-wrap">
+        <table id="dashboard-table">
+          <thead>
+            <tr>
+              <th>Photo</th>
+              <th>Nom</th>
+              <th>Catégorie</th>
+              <th>Prix</th>
+              <th>Stock</th>
+              <th>Vedette</th>
+            </tr>
+          </thead>
+          <tbody id="dashboard-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card__title">🔗 Liens rapides</div>
+      <div class="flex" style="flex-wrap:wrap;gap:.6rem">
+        <a href="index.html" target="_blank" class="btn btn--outline btn--sm">🏠 Accueil</a>
+        <a href="products.html" target="_blank" class="btn btn--outline btn--sm">📦 Catalogue</a>
+        <a href="cart.html" target="_blank" class="btn btn--outline btn--sm">🛒 Panier</a>
+        <a href="checkout.html" target="_blank" class="btn btn--outline btn--sm">💳 Checkout</a>
+        <a href="contact.html" target="_blank" class="btn btn--outline btn--sm">✉️ Contact</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ PAGE : Produits ════════ -->
+  <div class="page" id="page-products">
+    <div class="flex-between" style="margin-bottom:1.5rem">
+      <p class="text-muted" id="products-count"></p>
+      <button class="btn btn--gold" id="add-product-btn">+ Ajouter un produit</button>
+    </div>
+
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Photo</th>
+              <th>Nom</th>
+              <th>Catégorie</th>
+              <th>Prix</th>
+              <th>Ancien prix</th>
+              <th>Stock</th>
+              <th>Vedette</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="products-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ PAGE : Textes ════════ -->
+  <div class="page" id="page-texts">
+    <div class="card">
+      <div class="card__title">🏠 Page d'accueil — Hero</div>
+      <div class="text-item">
+        <label>Étiquette au-dessus du titre</label>
+        <input type="text" id="txt-hero-label" placeholder="ex: Nouvelle collection 2025">
+      </div>
+      <div class="text-item">
+        <label>Titre principal (ligne 1)</label>
+        <input type="text" id="txt-hero-title1" placeholder="ex: L'art de vivre">
+      </div>
+      <div class="text-item">
+        <label>Titre principal (ligne 2 — en italique doré)</label>
+        <input type="text" id="txt-hero-title2" placeholder="ex: avec élégance">
+      </div>
+      <div class="text-item">
+        <label>Description / sous-titre</label>
+        <textarea id="txt-hero-desc" rows="3"></textarea>
+      </div>
+      <div class="text-item">
+        <label>Texte bouton principal</label>
+        <input type="text" id="txt-hero-btn1" placeholder="ex: Découvrir la collection">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card__title">🚚 Barre de confiance</div>
+      <div class="text-item">
+        <label>Message livraison</label>
+        <input type="text" id="txt-trust-ship" placeholder="ex: Livraison gratuite à partir d'un achat de 10.000 Fcfa">
+      </div>
+      <div class="text-item">
+        <label>Message retours</label>
+        <input type="text" id="txt-trust-return" placeholder="ex: Retours gratuits 30 jours">
+      </div>
+      <div class="text-item">
+        <label>Message paiement sécurisé</label>
+        <input type="text" id="txt-trust-pay" placeholder="ex: Paiement 100% sécurisé">
+      </div>
+      <div class="text-item">
+        <label>Note clients</label>
+        <input type="text" id="txt-trust-rating" placeholder="ex: Note moyenne 4.8/5">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card__title">📣 Bannière promotionnelle</div>
+      <div class="text-item">
+        <label>Étiquette (tag)</label>
+        <input type="text" id="txt-promo-tag" placeholder="ex: Offre limitée">
+      </div>
+      <div class="text-item">
+        <label>Titre bannière</label>
+        <textarea id="txt-promo-title" rows="3" placeholder="ex: Jusqu'à −30% sur les montres"></textarea>
+      </div>
+      <div class="text-item">
+        <label>Description bannière</label>
+        <textarea id="txt-promo-desc" rows="3"></textarea>
+      </div>
+      <div class="text-item">
+        <label>Texte du bouton</label>
+        <input type="text" id="txt-promo-btn" placeholder="ex: Voir les montres →">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card__title">🏢 Informations boutique</div>
+      <div class="text-item">
+        <label>Nom de la boutique</label>
+        <input type="text" id="txt-shop-name" placeholder="ex: LUXE&CO">
+      </div>
+      <div class="text-item">
+        <label>Description (footer)</label>
+        <textarea id="txt-shop-desc" rows="3"></textarea>
+      </div>
+      <div class="text-item">
+        <label>Adresse</label>
+        <input type="text" id="txt-shop-address" placeholder="ex: 12 rue de la Paix, 75001 Paris">
+      </div>
+      <div class="text-item">
+        <label>Téléphone</label>
+        <input type="text" id="txt-shop-phone" placeholder="ex: +33 1 23 45 67 89">
+      </div>
+      <div class="text-item">
+        <label>E-mail</label>
+        <input type="email" id="txt-shop-email" placeholder="ex: bonjour@luxe-co.fr">
+      </div>
+    </div>
+
+    <button class="btn btn--gold btn--full" id="apply-texts-btn" style="margin-bottom:2rem">
+      ✓ Appliquer les textes
+    </button>
+  </div>
+
+  <!-- ════════ PAGE : Design ════════ -->
+  <div class="page" id="page-design">
+    <div class="card">
+      <div class="card__title">🎨 Palette de couleurs</div>
+      <p class="text-muted" style="margin-bottom:1.2rem">Cliquez sur une couleur pour la modifier. Les changements sont appliqués au site CSS.</p>
+      <div class="color-grid">
+        <div class="color-item">
+          <label>Couleur principale (noir)</label>
+          <div class="color-preview" id="preview-black" style="background:#0d0d0d">
+            <input type="color" id="color-black" value="#0d0d0d">
+          </div>
+        </div>
+        <div class="color-item">
+          <label>Couleur accent (or)</label>
+          <div class="color-preview" id="preview-gold" style="background:#c9a96e">
+            <input type="color" id="color-gold" value="#c9a96e">
+          </div>
+        </div>
+        <div class="color-item">
+          <label>Couleur or foncé</label>
+          <div class="color-preview" id="preview-gold-dark" style="background:#a07840">
+            <input type="color" id="color-gold-dark" value="#a07840">
+          </div>
+        </div>
+        <div class="color-item">
+          <label>Fond blanc</label>
+          <div class="color-preview" id="preview-white" style="background:#fafafa;border:1.5px solid #eee">
+            <input type="color" id="color-white" value="#fafafa">
+          </div>
+        </div>
+        <div class="color-item">
+          <label>Fond gris clair</label>
+          <div class="color-preview" id="preview-gray" style="background:#f5f4f0">
+            <input type="color" id="color-gray" value="#f5f4f0">
+          </div>
+        </div>
+        <div class="color-item">
+          <label>Texte secondaire</label>
+          <div class="color-preview" id="preview-muted" style="background:#5a5652">
+            <input type="color" id="color-muted" value="#5a5652">
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:.5rem">
+        <button class="btn btn--gold" id="apply-colors-btn">✓ Appliquer les couleurs</button>
+        <button class="btn btn--outline" id="reset-colors-btn">↩ Remettre les couleurs d'origine</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card__title">🔤 Typographie</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Police des titres</label>
+          <select id="font-title">
+            <option value="'Playfair Display', Georgia, serif" selected>Playfair Display (actuelle)</option>
+            <option value="Georgia, serif">Georgia</option>
+            <option value="'Times New Roman', serif">Times New Roman</option>
+            <option value="'Cormorant Garamond', serif">Cormorant Garamond</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Police du corps</label>
+          <select id="font-body">
+            <option value="'Inter', sans-serif" selected>Inter (actuelle)</option>
+            <option value="'Arial', sans-serif">Arial</option>
+            <option value="'Roboto', sans-serif">Roboto</option>
+            <option value="'Lato', sans-serif">Lato</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn--gold mt-1" id="apply-fonts-btn">✓ Appliquer la typographie</button>
+    </div>
+  </div>
+
+  <!-- ════════ PAGE : Export ════════ -->
+  <div class="page" id="page-export">
+    <div class="card">
+      <div class="card__title">💾 Exporter vos modifications</div>
+      <p class="text-muted" style="margin-bottom:1.5rem">
+        Téléchargez les fichiers modifiés et replacez-les dans votre dossier de site, puis re-poussez sur GitHub.
+      </p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem">
+        <div class="card" style="margin-bottom:0;border:1.5px solid #eee">
+          <div style="font-size:1.5rem;margin-bottom:.5rem">📄</div>
+          <div style="font-weight:700;margin-bottom:.3rem">products.js</div>
+          <p class="text-muted" style="margin-bottom:1rem">Base de données des produits avec vos modifications.</p>
+          <button class="btn btn--gold btn--full" id="export-products-btn">⬇ Télécharger products.js</button>
+        </div>
+        <div class="card" style="margin-bottom:0;border:1.5px solid #eee">
+          <div style="font-size:1.5rem;margin-bottom:.5rem">🎨</div>
+          <div style="font-weight:700;margin-bottom:.3rem">style.css</div>
+          <p class="text-muted" style="margin-bottom:1rem">Feuille CSS avec vos couleurs et polices personnalisées.</p>
+          <button class="btn btn--gold btn--full" id="export-css-btn">⬇ Télécharger style.css</button>
+        </div>
+      </div>
+
+      <div class="export-card">
+        <h3>📦 Tout exporter</h3>
+        <p>Téléchargez tous les fichiers modifiés en un seul ZIP prêt à déployer.</p>
+        <button class="btn btn--gold" id="export-all-btn">⬇ Télécharger tout le site (.zip)</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card__title">📋 Instructions de déploiement</div>
+      <ol style="padding-left:1.4rem;line-height:2;font-size:.88rem;color:#555">
+        <li>Téléchargez les fichiers modifiés ci-dessus</li>
+        <li>Remplacez les fichiers correspondants dans votre dossier <code style="background:#f4f3ef;padding:.1rem .4rem;border-radius:4px">ecommerce-site/</code></li>
+        <li>Ouvrez un terminal dans ce dossier et exécutez :</li>
+      </ol>
+      <pre style="background:#0d0d0d;color:#c9a96e;padding:1rem 1.2rem;border-radius:var(--radius);font-size:.82rem;margin-top:.8rem;overflow-x:auto">git add .
+git commit -m "Mise à jour via dashboard admin"
+git push origin main</pre>
+      <p class="text-muted mt-1">GitHub Pages se mettra à jour automatiquement dans 1–3 minutes.</p>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- ══════════════════════════════════════════
+     MODAL PRODUIT
+══════════════════════════════════════════ -->
+<div class="modal-overlay" id="product-modal">
+  <div class="modal">
+    <div class="modal__header">
+      <h2 class="modal__title" id="modal-title">Ajouter un produit</h2>
+      <button class="modal__close" id="modal-close">✕</button>
+    </div>
+    <div class="modal__body">
+      <input type="hidden" id="p-id">
+
+      <div class="form-grid" style="margin-bottom:1rem">
+        <div class="form-group form-group--full">
+          <label>Nom du produit *</label>
+          <input type="text" id="p-name" placeholder="ex: Montre Élégance Noir">
+        </div>
+        <div class="form-group">
+          <label>Catégorie *</label>
+          <select id="p-category">
+            <option value="montres">Montres</option>
+            <option value="maroquinerie">Maroquinerie</option>
+            <option value="parfums">Parfums</option>
+            <option value="papeterie">Papeterie</option>
+            <option value="accessoires">Accessoires</option>
+            <option value="maison">Maison</option>
+            <option value="bijoux">Bijoux</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Badge (optionnel)</label>
+          <select id="p-badge">
+            <option value="">Aucun</option>
+            <option value="Nouveau">Nouveau</option>
+            <option value="Promo">Promo</option>
+            <option value="Best-seller">Best-seller</option>
+            <option value="Exclusif">Exclusif</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Prix *</label>
+          <input type="number" id="p-price" placeholder="ex: 189.00" min="0" step="0.01">
+        </div>
+        <div class="form-group">
+          <label>Ancien prix (si promo)</label>
+          <input type="number" id="p-oldprice" placeholder="ex: 249.00" min="0" step="0.01">
+        </div>
+        <div class="form-group">
+          <label>Stock</label>
+          <input type="number" id="p-stock" placeholder="ex: 15" min="0">
+        </div>
+        <div class="form-group">
+          <label>Note (1–5)</label>
+          <input type="number" id="p-rating" placeholder="ex: 4.8" min="1" max="5" step="0.1">
+        </div>
+        <div class="form-group">
+          <label>Nombre d'avis</label>
+          <input type="number" id="p-reviews" placeholder="ex: 124" min="0">
+        </div>
+        <div class="form-group form-group--full">
+          <label>En vedette sur l'accueil ?</label>
+          <select id="p-featured">
+            <option value="true">Oui — affiché en vedette</option>
+            <option value="false">Non</option>
+          </select>
+        </div>
+        <div class="form-group form-group--full">
+          <label>Description *</label>
+          <textarea id="p-desc" rows="4"></textarea>
+        </div>
+        <div class="form-group form-group--full">
+          <label>URL de l'image principale *</label>
+          <input type="url" id="p-image" placeholder="https://images.unsplash.com/...">
+          <img id="p-image-preview" class="img-preview" src="" alt="" style="display:none">
+        </div>
+        <div class="form-group form-group--full">
+          <label>Caractéristiques / points forts</label>
+          <div class="features-list" id="features-list"></div>
+          <button class="btn btn--outline btn--sm" id="add-feature-btn">+ Ajouter une caractéristique</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <button class="btn btn--outline" id="modal-cancel">Annuler</button>
+      <button class="btn btn--red" id="modal-delete" style="display:none">🗑 Supprimer</button>
+      <button class="btn btn--gold" id="modal-save">✓ Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════════════════════════════════
+     SCRIPTS
+══════════════════════════════════════════ -->
+<script src="js/products.js"></script>
+<script>
+/* ═══════════ État global ═══════════ */
+let adminProducts = JSON.parse(localStorage.getItem("admin_products") || "null") || JSON.parse(JSON.stringify(PRODUCTS));
+let adminTexts    = JSON.parse(localStorage.getItem("admin_texts") || "null") || defaultTexts();
+let adminColors   = JSON.parse(localStorage.getItem("admin_colors") || "null") || defaultColors();
+
+function defaultTexts() {
+  return {
+    heroLabel: "Nouvelle collection 2025",
+    heroTitle1: "L'art de vivre",
+    heroTitle2: "avec élégance",
+    heroDesc: "Une sélection rigoureuse d'objets d'exception, pensés pour ceux qui refusent le compromis entre style et substance.",
+    heroBt1: "Découvrir la collection",
+    trustShip: "Livraison gratuite à partir d'un achat de 10.000 Fcfa",
+    trustReturn: "Retours gratuits 30 jours",
+    trustPay: "Paiement 100% sécurisé",
+    trustRating: "Note moyenne 4.8/5",
+    promoTag: "Offre limitée",
+    promoTitle: "Jusqu'à\n−30% sur\nles montres",
+    promoDesc: "Pour cette saison uniquement, profitez de remises exceptionnelles sur notre collection horlogerie.",
+    promoBt: "Voir les montres →",
+    shopName: "LUXE&CO",
+    shopDesc: "Une boutique de curation dédiée aux amateurs d'objets d'exception. Chaque produit est soigneusement sélectionné pour sa qualité, son design et sa durabilité.",
+    shopAddress: "12 rue de la Paix, 75001 Paris",
+    shopPhone: "+33 1 23 45 67 89",
+    shopEmail: "bonjour@luxe-co.fr"
+  };
+}
+
+function defaultColors() {
+  return {
+    black: "#0d0d0d",
+    gold: "#c9a96e",
+    goldDark: "#a07840",
+    white: "#fafafa",
+    gray: "#f5f4f0",
+    muted: "#5a5652"
+  };
+}
+
+/* ═══════════ Toast ═══════════ */
+function showToast(msg, type = "") {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className   = "toast" + (type ? ` toast--${type}` : "");
+  t.classList.add("is-visible");
+  setTimeout(() => t.classList.remove("is-visible"), 2800);
+}
+
+/* ═══════════ Navigation ═══════════ */
+const pages = { dashboard: "Vue d'ensemble", products: "Produits", texts: "Textes & messages", design: "Design & couleurs", export: "Exporter le site" };
+
+document.querySelectorAll(".nav-item[data-page]").forEach(item => {
+  item.addEventListener("click", () => {
+    const page = item.dataset.page;
+    document.querySelectorAll(".nav-item").forEach(i => i.classList.remove("is-active"));
+    item.classList.add("is-active");
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("is-active"));
+    document.getElementById(`page-${page}`).classList.add("is-active");
+    document.getElementById("header-title").textContent = pages[page] || "";
+    if (page === "dashboard") renderDashboard();
+    if (page === "products")  renderProductsTable();
+    if (page === "texts")     loadTexts();
+    if (page === "design")    loadColors();
+  });
+});
+
+document.getElementById("preview-btn").addEventListener("click", () => window.open("index.html", "_blank"));
+
+/* ═══════════ Dashboard ═══════════ */
+function renderDashboard() {
+  const p = adminProducts;
+  document.getElementById("stat-products").textContent = p.length;
+  document.getElementById("stat-featured").textContent = p.filter(x => x.featured).length;
+  document.getElementById("stat-promo").textContent    = p.filter(x => x.oldPrice).length;
+  const avg = p.reduce((s,x) => s + x.price, 0) / p.length;
+  document.getElementById("stat-avg").textContent = avg.toFixed(0) + " €";
+
+  document.getElementById("dashboard-tbody").innerHTML = p.map(prod => `
+    <tr>
+      <td><img src="${prod.image}" alt="${prod.name}" class="product-thumb-sm" onerror="this.src='https://placehold.co/48x48/f4f3ef/999?text=?'"></td>
+      <td><strong>${prod.name}</strong></td>
+      <td><span class="badge badge--gray">${prod.category}</span></td>
+      <td class="text-gold">${prod.price.toFixed(2)} €</td>
+      <td>${prod.stock}</td>
+      <td>${prod.featured ? "⭐" : "—"}</td>
+    </tr>`).join("");
+}
+
+/* ═══════════ Table Produits ═══════════ */
+function renderProductsTable() {
+  document.getElementById("products-count").textContent = `${adminProducts.length} produit(s) dans le catalogue`;
+  document.getElementById("products-tbody").innerHTML = adminProducts.map(prod => `
+    <tr>
+      <td><img src="${prod.image}" alt="${prod.name}" class="product-thumb-sm" onerror="this.src='https://placehold.co/48x48/f4f3ef/999?text=?'"></td>
+      <td><strong>${prod.name}</strong></td>
+      <td><span class="badge badge--gray">${prod.category}</span></td>
+      <td class="text-gold">${prod.price.toFixed(2)} €</td>
+      <td>${prod.oldPrice ? prod.oldPrice.toFixed(2) + " €" : "—"}</td>
+      <td>${prod.stock}</td>
+      <td>${prod.featured ? '<span class="badge badge--gold">⭐ Oui</span>' : '<span class="badge badge--gray">Non</span>'}</td>
+      <td>
+        <button class="btn btn--outline btn--sm" onclick="openEditModal(${prod.id})">✏️ Modifier</button>
+      </td>
+    </tr>`).join("");
+}
+
+/* ═══════════ Modal Produit ═══════════ */
+const modal = document.getElementById("product-modal");
+const openModal = () => modal.classList.add("is-open");
+const closeModal = () => modal.classList.remove("is-open");
+
+document.getElementById("modal-close").addEventListener("click", closeModal);
+document.getElementById("modal-cancel").addEventListener("click", closeModal);
+modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
+
+// Preview image en direct
+document.getElementById("p-image").addEventListener("input", e => {
+  const prev = document.getElementById("p-image-preview");
+  if (e.target.value) { prev.src = e.target.value; prev.style.display = "block"; }
+  else prev.style.display = "none";
+});
+
+// Ajouter caractéristique
+document.getElementById("add-feature-btn").addEventListener("click", () => addFeatureRow(""));
+
+function addFeatureRow(val) {
+  const list = document.getElementById("features-list");
+  const row  = document.createElement("div");
+  row.className = "feature-row";
+  row.innerHTML = `
+    <input type="text" placeholder="ex: Mouvement japonais Miyota" value="${val}">
+    <button class="btn btn--outline btn--sm" onclick="this.parentElement.remove()">✕</button>`;
+  list.appendChild(row);
+}
+
+// Ouvrir modal AJOUT
+document.getElementById("add-product-btn").addEventListener("click", () => {
+  document.getElementById("modal-title").textContent = "Ajouter un produit";
+  document.getElementById("modal-delete").style.display = "none";
+  document.getElementById("p-id").value = "";
+  ["p-name","p-price","p-oldprice","p-stock","p-rating","p-reviews","p-desc","p-image"].forEach(id => {
+    document.getElementById(id).value = "";
+  });
+  document.getElementById("p-badge").value = "";
+  document.getElementById("p-category").value = "montres";
+  document.getElementById("p-featured").value = "false";
+  document.getElementById("features-list").innerHTML = "";
+  document.getElementById("p-image-preview").style.display = "none";
+  openModal();
+});
+
+// Ouvrir modal EDIT
+function openEditModal(id) {
+  const prod = adminProducts.find(p => p.id === id);
+  if (!prod) return;
+  document.getElementById("modal-title").textContent = "Modifier : " + prod.name;
+  document.getElementById("modal-delete").style.display = "inline-flex";
+  document.getElementById("p-id").value      = prod.id;
+  document.getElementById("p-name").value    = prod.name;
+  document.getElementById("p-price").value   = prod.price;
+  document.getElementById("p-oldprice").value= prod.oldPrice || "";
+  document.getElementById("p-stock").value   = prod.stock;
+  document.getElementById("p-rating").value  = prod.rating;
+  document.getElementById("p-reviews").value = prod.reviews;
+  document.getElementById("p-desc").value    = prod.description;
+  document.getElementById("p-image").value   = prod.image;
+  document.getElementById("p-badge").value   = prod.badge || "";
+  document.getElementById("p-category").value= prod.category;
+  document.getElementById("p-featured").value= prod.featured ? "true" : "false";
+
+  const prev = document.getElementById("p-image-preview");
+  prev.src = prod.image; prev.style.display = "block";
+
+  const list = document.getElementById("features-list");
+  list.innerHTML = "";
+  (prod.features || []).forEach(f => addFeatureRow(f));
+
+  openModal();
+}
+
+// Supprimer produit
+document.getElementById("modal-delete").addEventListener("click", () => {
+  const id = parseInt(document.getElementById("p-id").value);
+  if (!confirm("Supprimer ce produit définitivement ?")) return;
+  adminProducts = adminProducts.filter(p => p.id !== id);
+  saveAll();
+  renderProductsTable();
+  closeModal();
+  showToast("Produit supprimé.", "green");
+});
+
+// Enregistrer produit
+document.getElementById("modal-save").addEventListener("click", () => {
+  const name  = document.getElementById("p-name").value.trim();
+  const price = parseFloat(document.getElementById("p-price").value);
+  const image = document.getElementById("p-image").value.trim();
+  const desc  = document.getElementById("p-desc").value.trim();
+
+  if (!name || !price || !image || !desc) {
+    showToast("Remplissez les champs obligatoires (*)");
+    return;
+  }
+
+  const features = Array.from(document.querySelectorAll("#features-list .feature-row input"))
+    .map(i => i.value.trim()).filter(Boolean);
+
+  const idVal = document.getElementById("p-id").value;
+  const isNew = !idVal;
+  const newId = isNew ? Math.max(0, ...adminProducts.map(p => p.id)) + 1 : parseInt(idVal);
+
+  const prod = {
+    id:          newId,
+    name,
+    category:    document.getElementById("p-category").value,
+    price,
+    oldPrice:    parseFloat(document.getElementById("p-oldprice").value) || null,
+    badge:       document.getElementById("p-badge").value || null,
+    rating:      parseFloat(document.getElementById("p-rating").value) || 4.5,
+    reviews:     parseInt(document.getElementById("p-reviews").value) || 0,
+    stock:       parseInt(document.getElementById("p-stock").value) || 10,
+    description: desc,
+    features,
+    image,
+    images:      [image],
+    featured:    document.getElementById("p-featured").value === "true"
+  };
+
+  if (isNew) {
+    adminProducts.push(prod);
+  } else {
+    const idx = adminProducts.findIndex(p => p.id === newId);
+    adminProducts[idx] = prod;
+  }
+
+  saveAll();
+  renderProductsTable();
+  closeModal();
+  showToast(isNew ? "Produit ajouté ✓" : "Produit mis à jour ✓", "green");
+});
+
+/* ═══════════ Textes ═══════════ */
+function loadTexts() {
+  const t = adminTexts;
+  document.getElementById("txt-hero-label").value   = t.heroLabel;
+  document.getElementById("txt-hero-title1").value  = t.heroTitle1;
+  document.getElementById("txt-hero-title2").value  = t.heroTitle2;
+  document.getElementById("txt-hero-desc").value    = t.heroDesc;
+  document.getElementById("txt-hero-btn1").value    = t.heroBt1;
+  document.getElementById("txt-trust-ship").value   = t.trustShip;
+  document.getElementById("txt-trust-return").value = t.trustReturn;
+  document.getElementById("txt-trust-pay").value    = t.trustPay;
+  document.getElementById("txt-trust-rating").value = t.trustRating;
+  document.getElementById("txt-promo-tag").value    = t.promoTag;
+  document.getElementById("txt-promo-title").value  = t.promoTitle;
+  document.getElementById("txt-promo-desc").value   = t.promoDesc;
+  document.getElementById("txt-promo-btn").value    = t.promoBt;
+  document.getElementById("txt-shop-name").value    = t.shopName;
+  document.getElementById("txt-shop-desc").value    = t.shopDesc;
+  document.getElementById("txt-shop-address").value = t.shopAddress;
+  document.getElementById("txt-shop-phone").value   = t.shopPhone;
+  document.getElementById("txt-shop-email").value   = t.shopEmail;
+}
+
+document.getElementById("apply-texts-btn").addEventListener("click", () => {
+  adminTexts = {
+    heroLabel:   document.getElementById("txt-hero-label").value,
+    heroTitle1:  document.getElementById("txt-hero-title1").value,
+    heroTitle2:  document.getElementById("txt-hero-title2").value,
+    heroDesc:    document.getElementById("txt-hero-desc").value,
+    heroBt1:     document.getElementById("txt-hero-btn1").value,
+    trustShip:   document.getElementById("txt-trust-ship").value,
+    trustReturn: document.getElementById("txt-trust-return").value,
+    trustPay:    document.getElementById("txt-trust-pay").value,
+    trustRating: document.getElementById("txt-trust-rating").value,
+    promoTag:    document.getElementById("txt-promo-tag").value,
+    promoTitle:  document.getElementById("txt-promo-title").value,
+    promoDesc:   document.getElementById("txt-promo-desc").value,
+    promoBt:     document.getElementById("txt-promo-btn").value,
+    shopName:    document.getElementById("txt-shop-name").value,
+    shopDesc:    document.getElementById("txt-shop-desc").value,
+    shopAddress: document.getElementById("txt-shop-address").value,
+    shopPhone:   document.getElementById("txt-shop-phone").value,
+    shopEmail:   document.getElementById("txt-shop-email").value,
+  };
+  saveAll();
+  showToast("Textes enregistrés ✓", "green");
+});
+
+/* ═══════════ Couleurs ═══════════ */
+function loadColors() {
+  const c = adminColors;
+  document.getElementById("color-black").value    = c.black;
+  document.getElementById("color-gold").value     = c.gold;
+  document.getElementById("color-gold-dark").value= c.goldDark;
+  document.getElementById("color-white").value    = c.white;
+  document.getElementById("color-gray").value     = c.gray;
+  document.getElementById("color-muted").value    = c.muted;
+
+  ["black","gold","gold-dark","white","gray","muted"].forEach(name => {
+    const input = document.getElementById(`color-${name}`);
+    const preview = document.getElementById(`preview-${name}`);
+    input.addEventListener("input", () => preview.style.background = input.value);
+  });
+}
+
+document.getElementById("apply-colors-btn").addEventListener("click", () => {
+  adminColors = {
+    black:    document.getElementById("color-black").value,
+    gold:     document.getElementById("color-gold").value,
+    goldDark: document.getElementById("color-gold-dark").value,
+    white:    document.getElementById("color-white").value,
+    gray:     document.getElementById("color-gray").value,
+    muted:    document.getElementById("color-muted").value
+  };
+  saveAll();
+  showToast("Couleurs enregistrées — exportez le CSS pour les appliquer au site ✓", "green");
+});
+
+document.getElementById("reset-colors-btn").addEventListener("click", () => {
+  adminColors = defaultColors();
+  loadColors();
+  saveAll();
+  showToast("Couleurs réinitialisées ✓");
+});
+
+document.getElementById("apply-fonts-btn").addEventListener("click", () => {
+  saveAll();
+  showToast("Typographie enregistrée — exportez le CSS pour appliquer ✓", "green");
+});
+
+/* ═══════════ Sauvegarde globale ═══════════ */
+function saveAll() {
+  localStorage.setItem("admin_products", JSON.stringify(adminProducts));
+  localStorage.setItem("admin_texts",    JSON.stringify(adminTexts));
+  localStorage.setItem("admin_colors",   JSON.stringify(adminColors));
+}
+
+document.getElementById("save-btn").addEventListener("click", () => {
+  saveAll();
+  showToast("Tout sauvegardé ✓", "green");
+});
+
+/* ═══════════ Export products.js ═══════════ */
+document.getElementById("export-products-btn").addEventListener("click", () => {
+  const lines = adminProducts.map(p => `
+  {
+    id: ${p.id},
+    name: "${p.name.replace(/"/g,'\\"')}",
+    category: "${p.category}",
+    price: ${p.price},
+    oldPrice: ${p.oldPrice || null},
+    badge: ${p.badge ? `"${p.badge}"` : null},
+    rating: ${p.rating},
+    reviews: ${p.reviews},
+    stock: ${p.stock},
+    description: "${p.description.replace(/"/g,'\\"').replace(/\n/g,' ')}",
+    features: [${(p.features||[]).map(f=>`"${f.replace(/"/g,'\\"')}"`).join(", ")}],
+    image: "${p.image}",
+    images: ${JSON.stringify(p.images || [p.image])},
+    featured: ${p.featured}
+  }`).join(",");
+
+  const content = `// products.js — généré par le dashboard admin LUXE&CO\n\nconst PRODUCTS = [${lines}\n];\n\nconst CATEGORIES = [\n  { id: "all", name: "Tous les produits", icon: "✦" },\n  { id: "montres", name: "Montres", icon: "⌚" },\n  { id: "maroquinerie", name: "Maroquinerie", icon: "👜" },\n  { id: "parfums", name: "Parfums", icon: "🌿" },\n  { id: "papeterie", name: "Papeterie", icon: "✒️" },\n  { id: "accessoires", name: "Accessoires", icon: "🕶️" },\n  { id: "maison", name: "Maison", icon: "🕯️" },\n  { id: "bijoux", name: "Bijoux", icon: "💍" }\n];\n\nconst getProductById = (id) => PRODUCTS.find(p => p.id === parseInt(id));\nconst getFeaturedProducts = () => PRODUCTS.filter(p => p.featured);\nconst getProductsByCategory = (cat) => cat === "all" ? PRODUCTS : PRODUCTS.filter(p => p.category === cat);\n`;
+
+  downloadFile("products.js", content, "text/javascript");
+  showToast("products.js téléchargé ✓", "green");
+});
+
+/* ═══════════ Export style.css ═══════════ */
+document.getElementById("export-css-btn").addEventListener("click", async () => {
+  try {
+    const resp = await fetch("css/style.css");
+    let css = await resp.text();
+
+    const c = adminColors;
+    css = css
+      .replace(/--black:\s*#[0-9a-fA-F]+;/, `--black:      ${c.black};`)
+      .replace(/--white:\s*#[0-9a-fA-F]+;/, `--white:      ${c.white};`)
+      .replace(/--gold:\s*#[0-9a-fA-F]+;/,  `--gold:       ${c.gold};`)
+      .replace(/--gold-dark:\s*#[0-9a-fA-F]+;/, `--gold-dark:  ${c.goldDark};`)
+      .replace(/--gray-100:\s*#[0-9a-fA-F]+;/, `--gray-100:   ${c.gray};`);
+
+    const fontTitle = document.getElementById("font-title").value;
+    const fontBody  = document.getElementById("font-body").value;
+    css = css
+      .replace(/--font-title:[^;]+;/, `--font-title: ${fontTitle};`)
+      .replace(/--font-body:[^;]+;/,  `--font-body:  ${fontBody};`);
+
+    downloadFile("style.css", css, "text/css");
+    showToast("style.css téléchargé ✓", "green");
+  } catch (e) {
+    showToast("Erreur lors de la lecture du CSS.");
+  }
+});
+
+/* ═══════════ Export ZIP (JSZip) ═══════════ */
+document.getElementById("export-all-btn").addEventListener("click", async () => {
+  showToast("Préparation du ZIP…");
+
+  // Charge JSZip depuis CDN
+  const script = document.createElement("script");
+  script.src = "https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js";
+  document.head.appendChild(script);
+
+  script.onload = async () => {
+    const zip = new JSZip();
+
+    const files = [
+      "index.html","products.html","product-detail.html",
+      "cart.html","checkout.html","contact.html",
+      "css/style.css","js/cart.js","js/main.js","js/products.js"
+    ];
+
+    for (const f of files) {
+      try {
+        const r = await fetch(f);
+        const t = await r.text();
+        zip.file(f, t);
+      } catch(e) { console.warn("Skip:", f); }
+    }
+
+    const blob = await zip.generateAsync({ type: "blob" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "luxe-co-site.zip";
+    a.click();
+    showToast("ZIP téléchargé ✓", "green");
+  };
+});
+
+/* ═══════════ Helpers ═══════════ */
+function downloadFile(filename, content, type) {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([content], { type }));
+  a.download = filename;
+  a.click();
+}
+
+/* ═══════════ Init ═══════════ */
+renderDashboard();
+</script>
+</body>
+</html>
