@@ -1016,6 +1016,21 @@ git push origin main</pre>
 ══════════════════════════════════════════ -->
 <script src="js/products.js"></script>
 <script>
+/* ═══════════ Formatage prix (devise admin) ═══════════ */
+function formatAdminPrice(amount) {
+  const c   = JSON.parse(localStorage.getItem("admin_currency") || "null") || { symbol: "€", pos: "after", dec: 2, sep: " " };
+  const dec = parseInt(c.dec) || 2;
+  let num   = Number(amount).toFixed(dec);
+  if (c.sep !== "") {
+    const parts = num.split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, c.sep);
+    num = dec > 0 ? parts.join(",") : parts[0];
+  } else {
+    num = dec > 0 ? num.replace(".", ",") : num.split(".")[0];
+  }
+  return c.pos === "before" ? `${c.symbol}${num}` : `${num} ${c.symbol}`;
+}
+
 /* ═══════════ État global ═══════════ */
 let adminProducts = JSON.parse(localStorage.getItem("admin_products") || "null") || JSON.parse(JSON.stringify(PRODUCTS));
 let adminTexts    = JSON.parse(localStorage.getItem("admin_texts") || "null") || defaultTexts();
@@ -1091,14 +1106,14 @@ function renderDashboard() {
   document.getElementById("stat-featured").textContent = p.filter(x => x.featured).length;
   document.getElementById("stat-promo").textContent    = p.filter(x => x.oldPrice).length;
   const avg = p.reduce((s,x) => s + x.price, 0) / p.length;
-  document.getElementById("stat-avg").textContent = avg.toFixed(0) + " €";
+  document.getElementById("stat-avg").textContent = formatAdminPrice(avg);
 
   document.getElementById("dashboard-tbody").innerHTML = p.map(prod => `
     <tr>
       <td><img src="${prod.image}" alt="${prod.name}" class="product-thumb-sm" onerror="this.src='https://placehold.co/48x48/f4f3ef/999?text=?'"></td>
       <td><strong>${prod.name}</strong></td>
       <td><span class="badge badge--gray">${prod.category}</span></td>
-      <td class="text-gold">${prod.price.toFixed(2)} €</td>
+      <td class="text-gold">${formatAdminPrice(prod.price)}</td>
       <td>${prod.stock}</td>
       <td>${prod.featured ? "⭐" : "—"}</td>
     </tr>`).join("");
@@ -1112,8 +1127,8 @@ function renderProductsTable() {
       <td><img src="${prod.image}" alt="${prod.name}" class="product-thumb-sm" onerror="this.src='https://placehold.co/48x48/f4f3ef/999?text=?'"></td>
       <td><strong>${prod.name}</strong></td>
       <td><span class="badge badge--gray">${prod.category}</span></td>
-      <td class="text-gold">${prod.price.toFixed(2)} €</td>
-      <td>${prod.oldPrice ? prod.oldPrice.toFixed(2) + " €" : "—"}</td>
+      <td class="text-gold">${formatAdminPrice(prod.price)}</td>
+      <td>${prod.oldPrice ? formatAdminPrice(prod.oldPrice) : "—"}</td>
       <td>${prod.stock}</td>
       <td>${prod.featured ? '<span class="badge badge--gold">⭐ Oui</span>' : '<span class="badge badge--gray">Non</span>'}</td>
       <td>
