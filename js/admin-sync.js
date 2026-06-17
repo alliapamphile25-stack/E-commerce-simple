@@ -33,6 +33,25 @@ window.formatPrice = function (amount) {
 
 (function () {
 
+  /* ── 0. Catégories ───────────────────────────────────────────
+     Remplace le tableau CATEGORIES global si des catégories
+     personnalisées ont été sauvegardées depuis admin.html.     */
+  const savedCategories = localStorage.getItem("admin_categories");
+  if (savedCategories) {
+    try {
+      const parsed = JSON.parse(savedCategories);
+      // Vide et remplace CATEGORIES (défini dans products.js)
+      if (typeof CATEGORIES !== "undefined") {
+        CATEGORIES.length = 0;
+        // Garde toujours "Tous les produits" en premier
+        CATEGORIES.push({ id: "all", name: "Tous les produits", icon: "✦" });
+        parsed.forEach(c => CATEGORIES.push(c));
+      }
+    } catch (e) {
+      console.warn("admin-sync: catégories corrompues.");
+    }
+  }
+
   /* ── 1. Produits ──────────────────────────────────────────────
      Remplace le tableau PRODUCTS par la version sauvegardée admin.
      Doit être exécuté APRÈS que products.js soit chargé.       */

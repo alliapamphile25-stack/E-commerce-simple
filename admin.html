@@ -462,6 +462,9 @@
     <div class="nav-item" data-page="products">
       <span class="nav-item__icon">📦</span> Produits
     </div>
+    <div class="nav-item" data-page="categories">
+      <span class="nav-item__icon">🏷️</span> Catégories
+    </div>
     <div class="nav-item" data-page="texts">
       <span class="nav-item__icon">✏️</span> Textes & messages
     </div>
@@ -591,6 +594,33 @@
         </table>
       </div>
     </div>
+  </div>
+
+  <!-- ════════ PAGE : Catégories ════════ -->
+  <div class="page" id="page-categories">
+
+    <div class="card">
+      <div class="card__title">🏷️ Gérer les catégories</div>
+      <p class="text-muted" style="margin-bottom:1.5rem">
+        Ajoutez, modifiez ou supprimez des catégories. Elles apparaîtront dans le formulaire produit et dans le catalogue du site.
+      </p>
+
+      <div class="flex-between" style="margin-bottom:1.2rem">
+        <span class="text-muted" id="cat-count">— catégorie(s)</span>
+        <button class="btn btn--gold" id="add-cat-btn">+ Nouvelle catégorie</button>
+      </div>
+
+      <!-- Liste des catégories -->
+      <div id="cat-list" style="display:flex;flex-direction:column;gap:.6rem"></div>
+    </div>
+
+    <!-- Aperçu -->
+    <div class="card">
+      <div class="card__title">👁️ Aperçu dans le catalogue</div>
+      <p class="text-muted" style="margin-bottom:1rem">Vos catégories telles qu'elles apparaîtront sur la page Catalogue.</p>
+      <div id="cat-preview-grid" style="display:flex;flex-wrap:wrap;gap:.7rem"></div>
+    </div>
+
   </div>
 
   <!-- ════════ PAGE : Textes ════════ -->
@@ -1080,7 +1110,7 @@ function showToast(msg, type = "") {
 }
 
 /* ═══════════ Navigation ═══════════ */
-const pages = { dashboard: "Vue d'ensemble", products: "Produits", texts: "Textes & messages", design: "Design & couleurs", export: "Exporter le site" };
+const pages = { dashboard: "Vue d'ensemble", products: "Produits", categories: "Catégories", texts: "Textes & messages", design: "Design & couleurs", currency: "Devise & prix", export: "Exporter le site" };
 
 document.querySelectorAll(".nav-item[data-page]").forEach(item => {
   item.addEventListener("click", () => {
@@ -1090,10 +1120,11 @@ document.querySelectorAll(".nav-item[data-page]").forEach(item => {
     document.querySelectorAll(".page").forEach(p => p.classList.remove("is-active"));
     document.getElementById(`page-${page}`).classList.add("is-active");
     document.getElementById("header-title").textContent = pages[page] || "";
-    if (page === "dashboard") renderDashboard();
-    if (page === "products")  renderProductsTable();
-    if (page === "texts")     loadTexts();
-    if (page === "design")    loadColors();
+    if (page === "dashboard")  renderDashboard();
+    if (page === "products")   renderProductsTable();
+    if (page === "categories") renderCategoriesPage();
+    if (page === "texts")      loadTexts();
+    if (page === "design")     loadColors();
   });
 });
 
@@ -1468,6 +1499,217 @@ function downloadFile(filename, content, type) {
   a.download = filename;
   a.click();
 }
+
+/* ═══════════ Catégories ═══════════ */
+let adminCategories = JSON.parse(localStorage.getItem("admin_categories") || "null") || defaultCategories();
+
+function defaultCategories() {
+  return [
+    { id: "montres",      name: "Montres",      icon: "⌚" },
+    { id: "maroquinerie", name: "Maroquinerie", icon: "👜" },
+    { id: "parfums",      name: "Parfums",      icon: "🌿" },
+    { id: "papeterie",    name: "Papeterie",    icon: "✒️" },
+    { id: "accessoires",  name: "Accessoires",  icon: "🕶️" },
+    { id: "maison",       name: "Maison",       icon: "🕯️" },
+    { id: "bijoux",       name: "Bijoux",       icon: "💍" }
+  ];
+}
+
+function slugify(str) {
+  return str.toLowerCase()
+    .normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
+function renderCategoriesPage() {
+  const list    = document.getElementById("cat-list");
+  const preview = document.getElementById("cat-preview-grid");
+  const count   = document.getElementById("cat-count");
+
+  count.textContent = `${adminCategories.length} catégorie(s)`;
+
+  // ── Liste éditable ──
+  list.innerHTML = adminCategories.map((cat, idx) => `
+    <div class="cat-row" data-idx="${idx}"
+      style="display:grid;grid-template-columns:52px 1fr 1fr auto auto;gap:.7rem;align-items:center;
+             padding:.9rem 1rem;background:#faf9f6;border-radius:8px;border:1.5px solid #eee;">
+
+      <!-- Icône -->
+      <div style="position:relative">
+        <div style="width:44px;height:44px;background:#fff;border:1.5px solid #ddd;border-radius:8px;
+                    display:flex;align-items:center;justify-content:center;font-size:1.4rem;cursor:pointer"
+             title="Cliquer pour changer l'icône" onclick="openEmojiPicker(${idx})">
+          ${cat.icon}
+        </div>
+      </div>
+
+      <!-- Nom -->
+      <div>
+        <label style="font-size:.68rem;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:.2rem">Nom affiché</label>
+        <input type="text" value="${cat.name}"
+          style="padding:.5rem .8rem;border:1.5px solid #ddd;border-radius:6px;font-size:.88rem;width:100%;outline:none"
+          oninput="updateCatField(${idx},'name',this.value)"
+          onfocus="this.style.borderColor='var(--gold)'"
+          onblur="this.style.borderColor='#ddd'">
+      </div>
+
+      <!-- ID (slug) -->
+      <div>
+        <label style="font-size:.68rem;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:.2rem">Identifiant (slug)</label>
+        <input type="text" value="${cat.id}"
+          style="padding:.5rem .8rem;border:1.5px solid #ddd;border-radius:6px;font-size:.82rem;width:100%;outline:none;color:#888;font-family:monospace"
+          oninput="updateCatField(${idx},'id',this.value)"
+          onfocus="this.style.borderColor='var(--gold)'"
+          onblur="this.style.borderColor='#ddd'">
+      </div>
+
+      <!-- Bouton remonter/descendre -->
+      <div style="display:flex;flex-direction:column;gap:.3rem">
+        <button onclick="moveCat(${idx},-1)" class="btn btn--outline btn--sm" style="padding:.3rem .5rem" title="Remonter" ${idx===0?"disabled":""}>↑</button>
+        <button onclick="moveCat(${idx}, 1)" class="btn btn--outline btn--sm" style="padding:.3rem .5rem" title="Descendre" ${idx===adminCategories.length-1?"disabled":""}>↓</button>
+      </div>
+
+      <!-- Supprimer -->
+      <button onclick="deleteCat(${idx})" class="btn btn--red btn--sm" title="Supprimer cette catégorie">🗑</button>
+    </div>`).join("");
+
+  // ── Aperçu catalogue ──
+  preview.innerHTML = adminCategories.map(cat => `
+    <div style="display:flex;flex-direction:column;align-items:center;gap:.5rem;padding:1rem 1.2rem;
+                background:#fff;border-radius:10px;border:1.5px solid #eee;min-width:100px;text-align:center">
+      <span style="font-size:1.8rem">${cat.icon}</span>
+      <span style="font-size:.8rem;font-weight:600;color:#555">${cat.name}</span>
+    </div>`).join("");
+
+  // ── Sync dropdown du formulaire produit ──
+  syncCategoryDropdown();
+}
+
+function syncCategoryDropdown() {
+  const sel = document.getElementById("p-category");
+  if (!sel) return;
+  const current = sel.value;
+  sel.innerHTML = adminCategories.map(c =>
+    `<option value="${c.id}" ${c.id === current ? "selected" : ""}>${c.icon} ${c.name}</option>`
+  ).join("");
+}
+
+function updateCatField(idx, field, value) {
+  adminCategories[idx][field] = field === "id" ? slugify(value) || value : value;
+  // Sync aperçu en live sans re-render complet
+  renderCatPreview();
+}
+
+function renderCatPreview() {
+  const preview = document.getElementById("cat-preview-grid");
+  if (!preview) return;
+  preview.innerHTML = adminCategories.map(cat => `
+    <div style="display:flex;flex-direction:column;align-items:center;gap:.5rem;padding:1rem 1.2rem;
+                background:#fff;border-radius:10px;border:1.5px solid #eee;min-width:100px;text-align:center">
+      <span style="font-size:1.8rem">${cat.icon}</span>
+      <span style="font-size:.8rem;font-weight:600;color:#555">${cat.name}</span>
+    </div>`).join("");
+}
+
+function moveCat(idx, dir) {
+  const target = idx + dir;
+  if (target < 0 || target >= adminCategories.length) return;
+  [adminCategories[idx], adminCategories[target]] = [adminCategories[target], adminCategories[idx]];
+  renderCategoriesPage();
+}
+
+function deleteCat(idx) {
+  const cat = adminCategories[idx];
+  const used = adminProducts.filter(p => p.category === cat.id).length;
+  if (used > 0) {
+    if (!confirm(`⚠️ La catégorie "${cat.name}" est utilisée par ${used} produit(s).\nLes supprimer perdra leur catégorie. Continuer ?`)) return;
+  } else {
+    if (!confirm(`Supprimer la catégorie "${cat.name}" ?`)) return;
+  }
+  adminCategories.splice(idx, 1);
+  renderCategoriesPage();
+  showToast("Catégorie supprimée.", "green");
+}
+
+// ── Sélecteur d'emoji simple ──
+const EMOJI_LIST = ["⌚","👜","🌿","✒️","🕶️","🕯️","💍","👗","👠","🎩","🧴","🛍️","💄","🎁","🏠","🌸","🍷","☕","🎨","📱","💻","🎵","🌊","🏋️","🌙","⭐","🔮","💎","🪴","🧸","🎀","🛁","🪞","🧣","🧤","👒","🎭","🖼️","🪙","🗝️"];
+
+function openEmojiPicker(idx) {
+  // Ferme tout picker existant
+  document.querySelectorAll(".emoji-picker").forEach(el => el.remove());
+
+  const picker = document.createElement("div");
+  picker.className = "emoji-picker";
+  picker.style.cssText = `
+    position:fixed;z-index:2000;background:#fff;border-radius:12px;
+    box-shadow:0 8px 32px rgba(0,0,0,.18);padding:1rem;
+    display:grid;grid-template-columns:repeat(8,1fr);gap:.4rem;
+    max-width:280px;border:1.5px solid #eee;`;
+
+  picker.innerHTML = `
+    <div style="grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem">
+      <span style="font-size:.78rem;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.08em">Choisir une icône</span>
+      <button onclick="this.closest('.emoji-picker').remove()" style="background:none;border:none;cursor:pointer;font-size:1rem;color:#888">✕</button>
+    </div>
+    <input type="text" placeholder="Ou coller un emoji…" id="custom-emoji-input"
+      style="grid-column:1/-1;padding:.5rem .8rem;border:1.5px solid #ddd;border-radius:6px;font-size:.9rem;margin-bottom:.5rem;outline:none;text-align:center">
+    ${EMOJI_LIST.map(e => `
+      <button onclick="setEmojiForCat(${idx},'${e}');this.closest('.emoji-picker').remove()"
+        style="background:none;border:none;cursor:pointer;font-size:1.4rem;padding:.3rem;border-radius:6px;transition:.15s"
+        onmouseenter="this.style.background='#f4f3ef'" onmouseleave="this.style.background='none'">${e}</button>`).join("")}
+    <button class="btn btn--gold btn--sm" onclick="applyCustomEmoji(${idx})"
+      style="grid-column:1/-1;margin-top:.5rem">✓ Valider l'emoji personnalisé</button>`;
+
+  document.body.appendChild(picker);
+
+  // Positionner au centre
+  picker.style.top  = "50%";
+  picker.style.left = "50%";
+  picker.style.transform = "translate(-50%,-50%)";
+
+  // Ferme en cliquant dehors
+  setTimeout(() => {
+    document.addEventListener("click", function closePicker(e) {
+      if (!picker.contains(e.target)) { picker.remove(); document.removeEventListener("click", closePicker); }
+    });
+  }, 100);
+}
+
+function setEmojiForCat(idx, emoji) {
+  adminCategories[idx].icon = emoji;
+  renderCategoriesPage();
+}
+
+function applyCustomEmoji(idx) {
+  const val = document.getElementById("custom-emoji-input")?.value?.trim();
+  if (val) {
+    adminCategories[idx].icon = val;
+    document.querySelectorAll(".emoji-picker").forEach(el => el.remove());
+    renderCategoriesPage();
+  }
+}
+
+// ── Ajouter catégorie ──
+document.getElementById("add-cat-btn").addEventListener("click", () => {
+  adminCategories.push({ id: "nouvelle-categorie", name: "Nouvelle catégorie", icon: "🏷️" });
+  renderCategoriesPage();
+  // Scroll vers la nouvelle ligne
+  setTimeout(() => {
+    const rows = document.querySelectorAll(".cat-row");
+    rows[rows.length - 1]?.scrollIntoView({ behavior: "smooth", block: "center" });
+    rows[rows.length - 1]?.querySelector("input")?.focus();
+  }, 100);
+});
+
+// ── Sauvegarde catégories ──
+const _origSaveAllCats = saveAll;
+saveAll = function () {
+  localStorage.setItem("admin_products",   JSON.stringify(adminProducts));
+  localStorage.setItem("admin_texts",      JSON.stringify(adminTexts));
+  localStorage.setItem("admin_colors",     JSON.stringify(adminColors));
+  localStorage.setItem("admin_currency",   JSON.stringify(adminCurrency));
+  localStorage.setItem("admin_categories", JSON.stringify(adminCategories));
+};
 
 /* ═══════════ Devise ═══════════ */
 let adminCurrency = JSON.parse(localStorage.getItem("admin_currency") || "null") || defaultCurrency();
