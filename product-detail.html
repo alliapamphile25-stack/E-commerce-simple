@@ -111,8 +111,8 @@ function renderProductCard(p) {
         </div>
         <div class="product-card__footer">
           <div class="product-card__price">
-            <span class="price-current">${p.price.toFixed(2)} €</span>
-            ${p.oldPrice ? `<span class="price-old">${p.oldPrice.toFixed(2)} €</span>` : ""}
+            <span class="price-current">${formatPrice(p.price)}</span>
+            ${p.oldPrice ? `<span class="price-old">${formatPrice(p.oldPrice)}</span>` : ""}
           </div>
           <button class="product-card__add" data-id="${p.id}" aria-label="Ajouter au panier">+</button>
         </div>
@@ -167,8 +167,8 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
 
       <div class="product-info__price">
-        <span class="product-info__price-current">${product.price.toFixed(2)} €</span>
-        ${product.oldPrice ? `<span class="product-info__price-old">${product.oldPrice.toFixed(2)} €</span>` : ""}
+        <span class="product-info__price-current">${formatPrice(product.price)}</span>
+        ${product.oldPrice ? `<span class="product-info__price-old">${formatPrice(product.oldPrice)}</span>` : ""}
       </div>
 
       <p class="product-info__desc">${product.description}</p>

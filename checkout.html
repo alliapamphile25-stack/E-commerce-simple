@@ -296,17 +296,17 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="recap-item__name">${i.name}</div>
         <div class="recap-item__qty">Qté : ${i.qty}</div>
       </div>
-      <span class="recap-item__price">${(i.price * i.qty).toFixed(2)} €</span>
+      <span class="recap-item__price">${formatPrice(i.price * i.qty)}</span>
     </div>`).join("");
 
   const ship = Cart.getShipping();
-  document.getElementById("recap-subtotal").textContent = `${Cart.getSubtotal().toFixed(2)} €`;
-  document.getElementById("recap-total").textContent    = `${Cart.getTotal().toFixed(2)} €`;
+  document.getElementById("recap-subtotal").textContent = `${formatPrice(Cart.getSubtotal())}`;
+  document.getElementById("recap-total").textContent    = `${formatPrice(Cart.getTotal())}`;
   if (ship === 0) {
     document.getElementById("recap-ship-line").style.display = "none";
     document.getElementById("recap-free").style.display      = "flex";
   } else {
-    document.getElementById("recap-shipping").textContent = `${ship.toFixed(2)} €`;
+    document.getElementById("recap-shipping").textContent = `${formatPrice(ship)}`;
   }
 
   // Sélection paiement

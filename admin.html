@@ -470,6 +470,9 @@
     </div>
 
     <div class="nav-section">Outils</div>
+    <div class="nav-item" data-page="currency">
+      <span class="nav-item__icon">💱</span> Devise & prix
+    </div>
     <div class="nav-item" data-page="export">
       <span class="nav-item__icon">💾</span> Exporter le site
     </div>
@@ -761,6 +764,112 @@
       </div>
       <button class="btn btn--gold mt-1" id="apply-fonts-btn">✓ Appliquer la typographie</button>
     </div>
+  </div>
+
+  <!-- ════════ PAGE : Devise ════════ -->
+  <div class="page" id="page-currency">
+
+    <div class="card">
+      <div class="card__title">💱 Devise affichée sur le site</div>
+      <p class="text-muted" style="margin-bottom:1.5rem">Choisissez une devise prédéfinie ou saisissez la vôtre. Elle remplacera partout le symbole de prix.</p>
+
+      <!-- Devises rapides -->
+      <div style="margin-bottom:1.5rem">
+        <label style="display:block;margin-bottom:.8rem">Devises courantes</label>
+        <div style="display:flex;flex-wrap:wrap;gap:.6rem" id="currency-presets">
+          <button class="currency-preset btn btn--outline" data-symbol="€"    data-pos="after"  data-dec="2">€ Euro</button>
+          <button class="currency-preset btn btn--outline" data-symbol="$"    data-pos="before" data-dec="2">$ Dollar US</button>
+          <button class="currency-preset btn btn--outline" data-symbol="£"    data-pos="before" data-dec="2">£ Livre sterling</button>
+          <button class="currency-preset btn btn--outline" data-symbol="FCFA" data-pos="after"  data-dec="0">FCFA Franc CFA</button>
+          <button class="currency-preset btn btn--outline" data-symbol="XOF"  data-pos="after"  data-dec="0">XOF Franc CFA (ISO)</button>
+          <button class="currency-preset btn btn--outline" data-symbol="MAD"  data-pos="after"  data-dec="2">MAD Dirham marocain</button>
+          <button class="currency-preset btn btn--outline" data-symbol="CHF"  data-pos="before" data-dec="2">CHF Franc suisse</button>
+          <button class="currency-preset btn btn--outline" data-symbol="CAD"  data-pos="before" data-dec="2">CAD Dollar canadien</button>
+          <button class="currency-preset btn btn--outline" data-symbol="DZD"  data-pos="after"  data-dec="2">DZD Dinar algérien</button>
+          <button class="currency-preset btn btn--outline" data-symbol="TND"  data-pos="after"  data-dec="3">TND Dinar tunisien</button>
+        </div>
+      </div>
+
+      <hr>
+
+      <!-- Personnalisation manuelle -->
+      <div class="form-grid" style="margin-top:1.2rem">
+        <div class="form-group">
+          <label>Symbole personnalisé</label>
+          <input type="text" id="currency-symbol" placeholder="ex: FCFA, €, $, £, DH…" maxlength="8">
+        </div>
+        <div class="form-group">
+          <label>Position du symbole</label>
+          <select id="currency-pos">
+            <option value="after">Après le montant (ex: 150 FCFA)</option>
+            <option value="before">Avant le montant (ex: $150)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Nombre de décimales</label>
+          <select id="currency-dec">
+            <option value="0">0 — ex: 10 000 FCFA</option>
+            <option value="2" selected>2 — ex: 99,90 €</option>
+            <option value="3">3 — ex: 1,500 TND</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Séparateur de milliers</label>
+          <select id="currency-sep">
+            <option value=" ">Espace — ex: 10 000</option>
+            <option value=".">Point — ex: 10.000</option>
+            <option value=",">Virgule — ex: 10,000</option>
+            <option value="">Aucun — ex: 10000</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Aperçu en temps réel -->
+      <div style="margin-top:1.5rem;padding:1.2rem 1.5rem;background:var(--bg);border-radius:var(--radius);border:1.5px solid #e8e5df">
+        <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#888;margin-bottom:.6rem">Aperçu</div>
+        <div style="display:flex;gap:2rem;flex-wrap:wrap;align-items:center">
+          <div>
+            <div style="font-size:.78rem;color:#888;margin-bottom:.2rem">Prix normal</div>
+            <div id="preview-price-normal" style="font-size:1.4rem;font-weight:700;color:var(--black)">189,00 €</div>
+          </div>
+          <div>
+            <div style="font-size:.78rem;color:#888;margin-bottom:.2rem">Prix promo</div>
+            <div id="preview-price-promo" style="font-size:1.4rem;font-weight:700;color:var(--gold-d)">145,00 €</div>
+          </div>
+          <div>
+            <div style="font-size:.78rem;color:#888;margin-bottom:.2rem">Ancien prix</div>
+            <div id="preview-price-old" style="font-size:1rem;color:#999;text-decoration:line-through">249,00 €</div>
+          </div>
+          <div>
+            <div style="font-size:.78rem;color:#888;margin-bottom:.2rem">Total panier</div>
+            <div id="preview-price-total" style="font-size:1.4rem;font-weight:700">334,00 €</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:1.5rem;display:flex;gap:1rem;flex-wrap:wrap">
+        <button class="btn btn--gold" id="apply-currency-btn">✓ Appliquer la devise</button>
+        <button class="btn btn--outline" id="reset-currency-btn">↩ Remettre €</button>
+      </div>
+    </div>
+
+    <!-- Taux de conversion rapide -->
+    <div class="card">
+      <div class="card__title">🔄 Convertir les prix du catalogue</div>
+      <p class="text-muted" style="margin-bottom:1.2rem">Multipliez tous les prix de votre catalogue par un taux de conversion en une seule fois.</p>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Taux de conversion</label>
+          <input type="number" id="conv-rate" placeholder="ex: 655.957 (1€ = 655.957 FCFA)" step="0.001" min="0.001">
+        </div>
+        <div class="form-group" style="justify-content:flex-end">
+          <label>&nbsp;</label>
+          <button class="btn btn--dark" id="apply-conv-btn">⚡ Convertir tous les prix</button>
+        </div>
+      </div>
+      <p class="text-muted" style="margin-top:.6rem;font-size:.78rem">⚠️ Cette action modifie tous les prix du catalogue. Utilisez "Sauvegarder" ensuite.</p>
+    </div>
+
   </div>
 
   <!-- ════════ PAGE : Export ════════ -->
@@ -1344,6 +1453,135 @@ function downloadFile(filename, content, type) {
   a.download = filename;
   a.click();
 }
+
+/* ═══════════ Devise ═══════════ */
+let adminCurrency = JSON.parse(localStorage.getItem("admin_currency") || "null") || defaultCurrency();
+
+function defaultCurrency() {
+  return { symbol: "€", pos: "after", dec: 2, sep: " " };
+}
+
+function formatPreviewPrice(amount, cur) {
+  const dec  = parseInt(cur.dec);
+  const sep  = cur.sep;
+  let num    = amount.toFixed(dec);
+
+  // Séparateur de milliers
+  if (sep !== "") {
+    const parts = num.split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, sep);
+    num = parts.join(",");
+  } else {
+    num = num.replace(".", ",");
+  }
+
+  return cur.pos === "before" ? `${cur.symbol}${num}` : `${num} ${cur.symbol}`;
+}
+
+function updateCurrencyPreview() {
+  const cur = {
+    symbol: document.getElementById("currency-symbol").value || "€",
+    pos:    document.getElementById("currency-pos").value,
+    dec:    document.getElementById("currency-dec").value,
+    sep:    document.getElementById("currency-sep").value
+  };
+  document.getElementById("preview-price-normal").textContent = formatPreviewPrice(189,   cur);
+  document.getElementById("preview-price-promo").textContent  = formatPreviewPrice(145,   cur);
+  document.getElementById("preview-price-old").textContent    = formatPreviewPrice(249,   cur);
+  document.getElementById("preview-price-total").textContent  = formatPreviewPrice(334,   cur);
+}
+
+function loadCurrencyPage() {
+  const c = adminCurrency;
+  document.getElementById("currency-symbol").value = c.symbol;
+  document.getElementById("currency-pos").value    = c.pos;
+  document.getElementById("currency-dec").value    = c.dec;
+  document.getElementById("currency-sep").value    = c.sep;
+
+  // Marque le preset actif
+  document.querySelectorAll(".currency-preset").forEach(btn => {
+    btn.classList.toggle("btn--gold",    btn.dataset.symbol === c.symbol);
+    btn.classList.toggle("btn--outline", btn.dataset.symbol !== c.symbol);
+  });
+
+  updateCurrencyPreview();
+}
+
+// Presets devises
+document.getElementById("currency-presets").addEventListener("click", e => {
+  const btn = e.target.closest(".currency-preset");
+  if (!btn) return;
+  document.getElementById("currency-symbol").value = btn.dataset.symbol;
+  document.getElementById("currency-pos").value    = btn.dataset.pos;
+  document.getElementById("currency-dec").value    = btn.dataset.dec;
+
+  document.querySelectorAll(".currency-preset").forEach(b => {
+    b.classList.remove("btn--gold");
+    b.classList.add("btn--outline");
+  });
+  btn.classList.add("btn--gold");
+  btn.classList.remove("btn--outline");
+
+  updateCurrencyPreview();
+});
+
+// Aperçu en direct sur changement de champs
+["currency-symbol","currency-pos","currency-dec","currency-sep"].forEach(id => {
+  document.getElementById(id).addEventListener("input", updateCurrencyPreview);
+  document.getElementById(id).addEventListener("change", updateCurrencyPreview);
+});
+
+// Appliquer
+document.getElementById("apply-currency-btn").addEventListener("click", () => {
+  adminCurrency = {
+    symbol: document.getElementById("currency-symbol").value.trim() || "€",
+    pos:    document.getElementById("currency-pos").value,
+    dec:    parseInt(document.getElementById("currency-dec").value),
+    sep:    document.getElementById("currency-sep").value
+  };
+  saveAll();
+  showToast("Devise appliquée sur tout le site ✓", "green");
+});
+
+// Reset
+document.getElementById("reset-currency-btn").addEventListener("click", () => {
+  adminCurrency = defaultCurrency();
+  loadCurrencyPage();
+  saveAll();
+  showToast("Devise réinitialisée → €");
+});
+
+// Conversion de tous les prix
+document.getElementById("apply-conv-btn").addEventListener("click", () => {
+  const rate = parseFloat(document.getElementById("conv-rate").value);
+  if (!rate || rate <= 0) { showToast("Entrez un taux valide."); return; }
+  if (!confirm(`Convertir TOUS les prix × ${rate} ?\nEx : 189 € → ${(189 * rate).toFixed(0)}\nCette action est irréversible sans rechargement.`)) return;
+
+  adminProducts = adminProducts.map(p => ({
+    ...p,
+    price:    Math.round(p.price * rate),
+    oldPrice: p.oldPrice ? Math.round(p.oldPrice * rate) : null
+  }));
+  saveAll();
+  renderProductsTable();
+  showToast(`Prix convertis × ${rate} ✓`, "green");
+});
+
+/* Étend saveAll pour inclure la devise */
+const _origSaveAll = saveAll;
+saveAll = function () {
+  localStorage.setItem("admin_products", JSON.stringify(adminProducts));
+  localStorage.setItem("admin_texts",    JSON.stringify(adminTexts));
+  localStorage.setItem("admin_colors",   JSON.stringify(adminColors));
+  localStorage.setItem("admin_currency", JSON.stringify(adminCurrency));
+};
+
+/* Étend la navigation pour charger la page devise */
+document.querySelectorAll(".nav-item[data-page]").forEach(item => {
+  if (item.dataset.page === "currency") {
+    item.addEventListener("click", loadCurrencyPage);
+  }
+});
 
 /* ═══════════ Init ═══════════ */
 renderDashboard();

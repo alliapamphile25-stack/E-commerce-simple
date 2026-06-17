@@ -1,8 +1,35 @@
 /**
  * admin-sync.js — Pont entre le dashboard admin et le site
  * Chargé sur toutes les pages. Applique les données du localStorage
- * (produits, textes, couleurs) sauvegardées depuis admin.html.
+ * (produits, textes, couleurs, devise) sauvegardées depuis admin.html.
  */
+
+/* ── Devise globale — utilisée par cart.js et les pages ── */
+window.ADMIN_CURRENCY = (function () {
+  try {
+    return JSON.parse(localStorage.getItem("admin_currency")) || { symbol: "€", pos: "after", dec: 2, sep: " " };
+  } catch (e) {
+    return { symbol: "€", pos: "after", dec: 2, sep: " " };
+  }
+})();
+
+/* Fonction de formatage de prix disponible partout */
+window.formatPrice = function (amount) {
+  const c   = window.ADMIN_CURRENCY;
+  const dec = parseInt(c.dec) || 2;
+  let num   = Number(amount).toFixed(dec);
+
+  // Séparateur de milliers
+  if (c.sep !== "") {
+    const parts = num.split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, c.sep);
+    num = dec > 0 ? parts.join(",") : parts[0];
+  } else {
+    num = dec > 0 ? num.replace(".", ",") : num.split(".")[0];
+  }
+
+  return c.pos === "before" ? `${c.symbol}${num}` : `${num} ${c.symbol}`;
+};
 
 (function () {
 
@@ -107,6 +134,29 @@
 
     } catch (e) {
       console.warn("admin-sync: textes corrompus.");
+    }
+
+    /* ── 4. Devise — remplace tous les prix affichés ──────────────
+       Cible les éléments portant data-price="<montant>".
+       Les templates JS (renderProductCard etc.) utilisent
+       formatPrice() directement, donc seuls les éléments
+       statiques ont besoin de cette passe.                       */
+    const cur = window.ADMIN_CURRENCY;
+    if (cur.symbol !== "€") {
+      // Remplace les occurrences textuelles de "€" restantes
+      const walk = (node) => {
+        if (node.nodeType === 3) {
+          node.textContent = node.textContent.replace(/(\d[\d\s,.]*)\s*€/g, (_, n) => `${n.trim()} ${cur.symbol}`);
+        } else if (node.nodeType === 1 && !["SCRIPT","STYLE","TEXTAREA","INPUT"].includes(node.tagName)) {
+          node.childNodes.forEach(walk);
+        }
+      };
+      // Cible uniquement les zones de prix pour éviter les faux positifs
+      document.querySelectorAll(
+        ".price-current, .price-old, .product-info__price-current, .product-info__price-old, " +
+        ".cart-row__price, .cart-row__total, .summary-line, .mini-cart__item-price, " +
+        ".recap-item__price, .mini-cart__total-val"
+      ).forEach(walk);
     }
   });
 
