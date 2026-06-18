@@ -1065,6 +1065,36 @@ git push origin main</pre>
             </p>
           </div>
           <img id="p-image-preview" class="img-preview" src="" alt="" style="display:none;margin-top:.6rem">
+
+          <!-- ── Outil de redimensionnement ── -->
+          <div id="img-resize-panel" style="display:none;margin-top:1rem;padding:1rem;border:1px solid #e8e6e0;border-radius:10px;background:#fafaf8">
+            <div style="font-weight:600;font-size:.88rem;margin-bottom:.75rem;color:#333">✂️ Adapter le format</div>
+            <!-- Formats prédéfinis -->
+            <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.75rem">
+              <button type="button" class="btn btn--outline btn--sm fmt-btn is-active" data-w="800" data-h="800" data-label="1:1 Carré">⬛ Carré</button>
+              <button type="button" class="btn btn--outline btn--sm fmt-btn" data-w="800" data-h="1067" data-label="3:4 Portrait">▬ Portrait</button>
+              <button type="button" class="btn btn--outline btn--sm fmt-btn" data-w="1200" data-h="800" data-label="3:2 Paysage">⬜ Paysage</button>
+              <button type="button" class="btn btn--outline btn--sm fmt-btn" data-w="1200" data-h="628" data-label="16:9 Bannière">▭ Bannière</button>
+              <button type="button" class="btn btn--outline btn--sm fmt-btn" data-w="0" data-h="0" data-label="Original">🔓 Original</button>
+            </div>
+            <!-- Dimensions manuelles -->
+            <div style="display:flex;gap:.5rem;align-items:center;margin-bottom:.75rem;flex-wrap:wrap">
+              <label style="font-size:.8rem;font-weight:400;color:#666">Largeur</label>
+              <input type="number" id="resize-w" value="800" min="50" max="4000" style="width:80px;padding:.3rem .5rem;font-size:.85rem">
+              <span style="color:#aaa;font-size:.8rem">px</span>
+              <label style="font-size:.8rem;font-weight:400;color:#666">Hauteur</label>
+              <input type="number" id="resize-h" value="800" min="50" max="4000" style="width:80px;padding:.3rem .5rem;font-size:.85rem">
+              <span style="color:#aaa;font-size:.8rem">px</span>
+            </div>
+            <!-- Qualité JPEG -->
+            <div style="display:flex;gap:.5rem;align-items:center;margin-bottom:.75rem">
+              <label style="font-size:.8rem;font-weight:400;color:#666;white-space:nowrap">Qualité</label>
+              <input type="range" id="resize-quality" min="40" max="100" value="88" style="flex:1">
+              <span id="resize-quality-val" style="font-size:.8rem;color:#666;width:32px">88%</span>
+            </div>
+            <button type="button" class="btn btn--gold btn--sm" id="apply-resize-btn">✓ Appliquer le redimensionnement</button>
+            <canvas id="resize-canvas" style="display:none"></canvas>
+          </div>
         </div>
         <div class="form-group form-group--full">
           <label>Caractéristiques / points forts</label>
@@ -1239,21 +1269,83 @@ document.getElementById("p-image").addEventListener("input", e => {
   else prev.style.display = "none";
 });
 
+// ── Outil de redimensionnement ──────────────────────────────────
+let _resizeOriginalSrc = null; // garde l'image originale avant resize
+
+function loadImageIntoResizer(dataUrl) {
+  _resizeOriginalSrc = dataUrl;
+  // Affiche le panneau
+  document.getElementById("img-resize-panel").style.display = "block";
+  // Prévisualisation
+  const prev = document.getElementById("p-image-preview");
+  prev.src = dataUrl; prev.style.display = "block";
+  document.getElementById("file-drop-zone").style.borderColor = "var(--gold)";
+  // Applique le format actif par défaut (carré 800×800)
+  applyResize();
+}
+
+function applyResize() {
+  if (!_resizeOriginalSrc) return;
+  const w       = parseInt(document.getElementById("resize-w").value) || 800;
+  const h       = parseInt(document.getElementById("resize-h").value) || 800;
+  const quality = parseInt(document.getElementById("resize-quality").value) / 100;
+  const canvas  = document.getElementById("resize-canvas");
+  const ctx     = canvas.getContext("2d");
+  const img     = new Image();
+  img.onload = () => {
+    let sw = img.naturalWidth, sh = img.naturalHeight;
+    // Mode "Original" — pas de redim, juste compression
+    if (w === 0 || h === 0) {
+      canvas.width  = sw;
+      canvas.height = sh;
+    } else {
+      // Recadrage centré (cover)
+      const srcRatio = sw / sh;
+      const dstRatio = w / h;
+      let sx = 0, sy = 0, sW = sw, sH = sh;
+      if (srcRatio > dstRatio) { sW = sh * dstRatio; sx = (sw - sW) / 2; }
+      else                     { sH = sw / dstRatio; sy = (sh - sH) / 2; }
+      canvas.width  = w;
+      canvas.height = h;
+      ctx.drawImage(img, sx, sy, sW, sH, 0, 0, w, h);
+    }
+    if (w === 0) ctx.drawImage(img, 0, 0);
+    const result = canvas.toDataURL("image/jpeg", quality);
+    document.getElementById("p-image").value = result;
+    const prev = document.getElementById("p-image-preview");
+    prev.src = result; prev.style.display = "block";
+    const kb = Math.round(result.length * 0.75 / 1024);
+    showToast(`Image redimensionnée — ${canvas.width}×${canvas.height}px · ${kb} Ko ✓`, "green");
+  };
+  img.src = _resizeOriginalSrc;
+}
+
+// Boutons de format prédéfini
+document.querySelectorAll(".fmt-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".fmt-btn").forEach(b => b.classList.remove("is-active"));
+    btn.classList.add("is-active");
+    const w = parseInt(btn.dataset.w), h = parseInt(btn.dataset.h);
+    document.getElementById("resize-w").value = w || "";
+    document.getElementById("resize-h").value = h || "";
+  });
+});
+
+// Slider qualité
+document.getElementById("resize-quality").addEventListener("input", e => {
+  document.getElementById("resize-quality-val").textContent = e.target.value + "%";
+});
+
+// Bouton appliquer
+document.getElementById("apply-resize-btn").addEventListener("click", applyResize);
+
 // Upload image depuis l'ordinateur
 document.getElementById("p-image-file").addEventListener("change", e => {
   const file = e.target.files[0];
   if (!file) return;
   if (file.size > 5 * 1024 * 1024) { showToast("Image trop lourde (max 5 Mo)."); return; }
   const reader = new FileReader();
-  reader.onload = ev => {
-    const dataUrl = ev.target.result;
-    document.getElementById("p-image").value = dataUrl;
-    const prev = document.getElementById("p-image-preview");
-    prev.src = dataUrl;
-    prev.style.display = "block";
-    document.getElementById("file-drop-zone").style.borderColor = "var(--gold)";
-    showToast("Image chargée ✓", "green");
-  };
+  reader.onload = ev => loadImageIntoResizer(ev.target.result);
   reader.readAsDataURL(file);
 });
 
@@ -1265,15 +1357,8 @@ dropZone.addEventListener("drop", e => {
   e.preventDefault();
   const file = e.dataTransfer.files[0];
   if (!file || !file.type.startsWith("image/")) { showToast("Fichier non valide."); return; }
-  document.getElementById("p-image-file").files; // reset
   const reader = new FileReader();
-  reader.onload = ev => {
-    document.getElementById("p-image").value = ev.target.result;
-    const prev = document.getElementById("p-image-preview");
-    prev.src = ev.target.result; prev.style.display = "block";
-    dropZone.style.borderColor = "var(--gold)";
-    showToast("Image chargée ✓", "green");
-  };
+  reader.onload = ev => loadImageIntoResizer(ev.target.result);
   reader.readAsDataURL(file);
 });
 
