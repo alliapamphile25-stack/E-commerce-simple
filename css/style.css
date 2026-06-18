@@ -133,6 +133,53 @@ h1, h2, h3, h4 {
 .btn--sm   { padding: .55rem 1.2rem; font-size: .78rem; }
 .btn--lg   { padding: 1rem 2.6rem; font-size: 1rem; }
 
+/* ── 3b. Bandeau défilant (marquee) ──────────────────────────── */
+.marquee-bar {
+  background: var(--black);
+  color: rgba(255,255,255,.75);
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  height: 36px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1001;
+}
+
+.marquee-track {
+  display: flex;
+  animation: marquee-scroll 28s linear infinite;
+  white-space: nowrap;
+  will-change: transform;
+}
+.marquee-track:hover { animation-play-state: paused; }
+
+.marquee-item {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  padding: 0 2.5rem;
+}
+.marquee-item .dot {
+  width: 4px; height: 4px;
+  background: var(--gold);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.marquee-item strong { color: var(--gold); }
+
+@keyframes marquee-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Décaler la navbar sous le bandeau */
+.navbar { top: 36px !important; }
+
 /* ── 4. Navbar ────────────────────────────────────────────────── */
 .navbar {
   position: fixed;

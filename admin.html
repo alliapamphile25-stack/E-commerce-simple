@@ -776,22 +776,43 @@
         <div class="form-group">
           <label>Police des titres</label>
           <select id="font-title">
-            <option value="'Playfair Display', Georgia, serif" selected>Playfair Display (actuelle)</option>
-            <option value="Georgia, serif">Georgia</option>
-            <option value="'Times New Roman', serif">Times New Roman</option>
-            <option value="'Cormorant Garamond', serif">Cormorant Garamond</option>
+            <option value="Playfair Display">✦ Playfair Display — élégant sérif (actuelle)</option>
+            <option value="Cormorant Garamond">✦ Cormorant Garamond — luxe raffiné</option>
+            <option value="Libre Baskerville">✦ Libre Baskerville — classique</option>
+            <option value="Lora">✦ Lora — moderne sérif</option>
+            <option value="Merriweather">✦ Merriweather — lisible sérif</option>
+            <option value="Cinzel">✦ Cinzel — romain majestueux</option>
+            <option value="EB Garamond">✦ EB Garamond — typographie historique</option>
+            <option value="Josefin Sans">✦ Josefin Sans — géométrique moderne</option>
+            <option value="Raleway">✦ Raleway — élégant sans-sérif</option>
+            <option value="Montserrat">✦ Montserrat — moderne & épuré</option>
+            <option value="Georgia">✦ Georgia — système classique</option>
           </select>
         </div>
         <div class="form-group">
           <label>Police du corps</label>
           <select id="font-body">
-            <option value="'Inter', sans-serif" selected>Inter (actuelle)</option>
-            <option value="'Arial', sans-serif">Arial</option>
-            <option value="'Roboto', sans-serif">Roboto</option>
-            <option value="'Lato', sans-serif">Lato</option>
+            <option value="Inter">Inter — neutre moderne (actuelle)</option>
+            <option value="Lato">Lato — doux & lisible</option>
+            <option value="Roboto">Roboto — Google standard</option>
+            <option value="Open Sans">Open Sans — universel</option>
+            <option value="Nunito">Nunito — arrondi convivial</option>
+            <option value="Poppins">Poppins — géométrique propre</option>
+            <option value="DM Sans">DM Sans — moderne minimaliste</option>
+            <option value="Source Sans 3">Source Sans 3 — lisibilité maximale</option>
+            <option value="Outfit">Outfit — contemporain</option>
+            <option value="Jost">Jost — épuré haut de gamme</option>
+            <option value="Arial">Arial — système universel</option>
           </select>
         </div>
       </div>
+
+      <!-- Aperçu typographie -->
+      <div id="font-preview" style="margin-top:1.2rem;padding:1.5rem;background:#faf9f6;border-radius:8px;border:1.5px solid #eee">
+        <div id="font-preview-title" style="font-size:2rem;margin-bottom:.5rem;line-height:1.2">L'élégance au quotidien</div>
+        <div id="font-preview-body" style="font-size:.95rem;color:#666;line-height:1.7">Une sélection rigoureuse de produits d'exception, pensés pour ceux qui exigent le meilleur. Qualité, style et durabilité.</div>
+      </div>
+
       <button class="btn btn--gold mt-1" id="apply-fonts-btn">✓ Appliquer la typographie</button>
     </div>
   </div>
@@ -1019,9 +1040,31 @@ git push origin main</pre>
           <textarea id="p-desc" rows="4"></textarea>
         </div>
         <div class="form-group form-group--full">
-          <label>URL de l'image principale *</label>
-          <input type="url" id="p-image" placeholder="https://images.unsplash.com/...">
-          <img id="p-image-preview" class="img-preview" src="" alt="" style="display:none">
+          <label>Image principale *</label>
+          <!-- Onglets URL / Fichier -->
+          <div style="display:flex;gap:.5rem;margin-bottom:.6rem">
+            <button type="button" class="btn btn--outline btn--sm img-tab is-active" data-tab="url">🔗 URL</button>
+            <button type="button" class="btn btn--outline btn--sm img-tab" data-tab="file">💻 Depuis l'ordinateur</button>
+          </div>
+          <!-- URL -->
+          <div id="img-tab-url">
+            <input type="url" id="p-image" placeholder="https://images.unsplash.com/...">
+          </div>
+          <!-- Fichier -->
+          <div id="img-tab-file" style="display:none">
+            <label for="p-image-file" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6rem;
+              padding:1.5rem;border:2px dashed #ddd;border-radius:8px;cursor:pointer;transition:.2s;background:#fafaf8;text-transform:none;letter-spacing:0;font-size:.85rem;color:#888;font-weight:400"
+              id="file-drop-zone" onmouseenter="this.style.borderColor='var(--gold)'" onmouseleave="this.style.borderColor='#ddd'">
+              <span style="font-size:2rem">📁</span>
+              <span>Cliquez ou glissez une image ici</span>
+              <span style="font-size:.75rem">JPG, PNG, WEBP — max 5 Mo</span>
+              <input type="file" id="p-image-file" accept="image/*" style="display:none">
+            </label>
+            <p class="text-muted" style="margin-top:.5rem;font-size:.75rem">
+              ⚠️ L'image sera stockée en base64 dans le navigateur. Pour la partager en ligne, utilisez plutôt une URL Unsplash ou hébergez l'image.
+            </p>
+          </div>
+          <img id="p-image-preview" class="img-preview" src="" alt="" style="display:none;margin-top:.6rem">
         </div>
         <div class="form-group form-group--full">
           <label>Caractéristiques / points forts</label>
@@ -1177,11 +1220,61 @@ document.getElementById("modal-close").addEventListener("click", closeModal);
 document.getElementById("modal-cancel").addEventListener("click", closeModal);
 modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
 
-// Preview image en direct
+// Onglets URL / Fichier
+document.querySelectorAll(".img-tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".img-tab").forEach(t => t.classList.remove("is-active","btn--gold"));
+    tab.classList.add("is-active","btn--gold");
+    tab.classList.remove("btn--outline");
+    document.querySelectorAll(".img-tab:not(.is-active)").forEach(t => { t.classList.add("btn--outline"); });
+    document.getElementById("img-tab-url").style.display  = tab.dataset.tab === "url"  ? "block" : "none";
+    document.getElementById("img-tab-file").style.display = tab.dataset.tab === "file" ? "block" : "none";
+  });
+});
+
+// Preview image URL en direct
 document.getElementById("p-image").addEventListener("input", e => {
   const prev = document.getElementById("p-image-preview");
   if (e.target.value) { prev.src = e.target.value; prev.style.display = "block"; }
   else prev.style.display = "none";
+});
+
+// Upload image depuis l'ordinateur
+document.getElementById("p-image-file").addEventListener("change", e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { showToast("Image trop lourde (max 5 Mo)."); return; }
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const dataUrl = ev.target.result;
+    document.getElementById("p-image").value = dataUrl;
+    const prev = document.getElementById("p-image-preview");
+    prev.src = dataUrl;
+    prev.style.display = "block";
+    document.getElementById("file-drop-zone").style.borderColor = "var(--gold)";
+    showToast("Image chargée ✓", "green");
+  };
+  reader.readAsDataURL(file);
+});
+
+// Drag & drop sur la zone
+const dropZone = document.getElementById("file-drop-zone");
+dropZone.addEventListener("dragover", e => { e.preventDefault(); dropZone.style.borderColor = "var(--gold)"; dropZone.style.background = "#fffbf4"; });
+dropZone.addEventListener("dragleave", () => { dropZone.style.borderColor = "#ddd"; dropZone.style.background = "#fafaf8"; });
+dropZone.addEventListener("drop", e => {
+  e.preventDefault();
+  const file = e.dataTransfer.files[0];
+  if (!file || !file.type.startsWith("image/")) { showToast("Fichier non valide."); return; }
+  document.getElementById("p-image-file").files; // reset
+  const reader = new FileReader();
+  reader.onload = ev => {
+    document.getElementById("p-image").value = ev.target.result;
+    const prev = document.getElementById("p-image-preview");
+    prev.src = ev.target.result; prev.style.display = "block";
+    dropZone.style.borderColor = "var(--gold)";
+    showToast("Image chargée ✓", "green");
+  };
+  reader.readAsDataURL(file);
 });
 
 // Ajouter caractéristique
@@ -1387,9 +1480,36 @@ document.getElementById("reset-colors-btn").addEventListener("click", () => {
   showToast("Couleurs réinitialisées ✓");
 });
 
+// Aperçu police en temps réel
+const GOOGLE_FONTS_LOADED = new Set();
+function loadGoogleFont(name) {
+  if (GOOGLE_FONTS_LOADED.has(name)) return;
+  const link = document.createElement("link");
+  link.rel = "stylesheet";
+  link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(name)}:wght@400;700&display=swap`;
+  document.head.appendChild(link);
+  GOOGLE_FONTS_LOADED.add(name);
+}
+
+document.getElementById("font-title").addEventListener("change", e => {
+  const f = e.target.value;
+  loadGoogleFont(f);
+  document.getElementById("font-preview-title").style.fontFamily = `'${f}', serif`;
+});
+document.getElementById("font-body").addEventListener("change", e => {
+  const f = e.target.value;
+  loadGoogleFont(f);
+  document.getElementById("font-preview-body").style.fontFamily = `'${f}', sans-serif`;
+});
+
 document.getElementById("apply-fonts-btn").addEventListener("click", () => {
+  const titleFont = document.getElementById("font-title").value;
+  const bodyFont  = document.getElementById("font-body").value;
+  loadGoogleFont(titleFont);
+  loadGoogleFont(bodyFont);
+  localStorage.setItem("admin_fonts", JSON.stringify({ title: titleFont, body: bodyFont }));
   saveAll();
-  showToast("Typographie enregistrée — exportez le CSS pour appliquer ✓", "green");
+  showToast("Typographie appliquée sur le site ✓", "green");
 });
 
 /* ═══════════ Sauvegarde globale ═══════════ */

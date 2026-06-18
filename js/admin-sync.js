@@ -67,7 +67,36 @@ window.formatPrice = function (amount) {
     }
   }
 
-  /* ── 2. Couleurs ──────────────────────────────────────────────
+  /* ── 2. Polices ──────────────────────────────────────────────
+     Charge les polices Google et injecte les variables CSS.      */
+  const savedFonts = localStorage.getItem("admin_fonts");
+  if (savedFonts) {
+    try {
+      const f = JSON.parse(savedFonts);
+      const loadFont = (name) => {
+        if (!name || document.querySelector(`link[data-gfont="${name}"]`)) return;
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.dataset.gfont = name;
+        link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(name)}:wght@400;500;600;700&display=swap`;
+        document.head.appendChild(link);
+      };
+      if (f.title) loadFont(f.title);
+      if (f.body)  loadFont(f.body);
+      const fontStyle = document.createElement("style");
+      fontStyle.id = "admin-fonts";
+      fontStyle.textContent = `
+        :root {
+          ${f.title ? `--font-title: '${f.title}', serif !important;` : ""}
+          ${f.body  ? `--font-body:  '${f.body}', sans-serif !important;` : ""}
+        }`;
+      document.head.appendChild(fontStyle);
+    } catch (e) {
+      console.warn("admin-sync: polices corrompues.");
+    }
+  }
+
+  /* ── 3. Couleurs ──────────────────────────────────────────────
      Injecte les variables CSS personnalisées dans <head>.        */
   const savedColors = localStorage.getItem("admin_colors");
   if (savedColors) {
@@ -92,7 +121,7 @@ window.formatPrice = function (amount) {
     }
   }
 
-  /* ── 3. Textes — appliqués après chargement du DOM ────────────
+  /* ── 4. Textes — appliqués après chargement du DOM ────────────
      Cible chaque élément par son data-admin-key.               */
   document.addEventListener("DOMContentLoaded", function () {
     const savedTexts = localStorage.getItem("admin_texts");
@@ -155,7 +184,7 @@ window.formatPrice = function (amount) {
       console.warn("admin-sync: textes corrompus.");
     }
 
-    /* ── 4. Devise — remplace tous les prix affichés ──────────────
+    /* ── 5. Devise — remplace tous les prix affichés ──────────────
        Cible les éléments portant data-price="<montant>".
        Les templates JS (renderProductCard etc.) utilisent
        formatPrice() directement, donc seuls les éléments
